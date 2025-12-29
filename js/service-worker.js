@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_NAME = 'agriflow-v1';
+const CACHE_NAME = 'agriflow-v2';
 const urlsToCache = [
   '/farm-pwa1/',
   '/farm-pwa1/index.html',
@@ -18,50 +18,17 @@ const urlsToCache = [
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
-// Install event
+// Install event with install prompt
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache opened');
+        console.log('📦 Caching files for offline use');
         return cache.addAll(urlsToCache);
       })
-  );
-});
-
-// Fetch event
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        
-        return fetch(event.request).then(
-          response => {
-            // Check if valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            // Clone the response
-            const responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-            
-            return response;
-          }
-        ).catch(() => {
-          // If fetch fails and the request is for a page, return the offline page
-          if (event.request.headers.get('accept').includes('text/html')) {
-            return caches.match('/farm-pwa1/index.html');
-          }
-        });
+      .then(() => {
+        console.log('✅ Service Worker installed');
+        return self.skipWaiting();
       })
   );
 });
@@ -75,10 +42,58 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('🗑️ Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('✅ Service Worker activated');
+      return self.clients.claim();
     })
   );
+});
+
+// Fetch event
+self.addEventListener('fetch', event => {
+  // Skip cross-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+  
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        
+        return fetch(event.request).then(response => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+          
+          const responseToCache = response.clone();
+          
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          
+          return response;
+        });
+      }).catch(() => {
+        // If offline and request is for a page, return the home page
+        if (event.request.headers.get('accept').includes('text/html')) {
+          return caches.match('/farm-pwa1/index.html');
+        }
+      })
+  );
+});
+
+// Listen for messages from the page
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
