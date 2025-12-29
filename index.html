@@ -2,142 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AgriFlow - Smart Farm Management</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
-    <!-- In the head section of index.html, add these: -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header class="main-header">
             <div class="logo-container">
                 <i class="fas fa-tractor logo-icon"></i>
-                <h1>AgriFlow</h1>
-                <span class="beta-badge">BETA</span>
-            </div>
-            <p class="tagline">Smart Management for Modern Farmers</p>
-        </header>
-
-        <div class="weather-widget">
-            <div class="weather-info">
-                <i class="fas fa-sun weather-icon sunny"></i>
                 <div>
-                    <h3>Weather Today</h3>
-                    <p>Sunny, 28°C • Perfect for farm activities</p>
+                    <h1>AgriFlow</h1>
+                    <p class="tagline">Smart Farm Management</p>
                 </div>
             </div>
-            <button class="refresh-weather"><i class="fas fa-sync-alt"></i></button>
-        </div>
+            <button class="menu-btn" onclick="navigateTo('settings.html')">
+                <i class="fas fa-cog"></i>
+            </button>
+        </header>
 
         <div class="profitability-banner" id="profitabilityBanner">
             <i class="fas fa-chart-line"></i>
-            <span>Loading profitability analysis...</span>
+            <span>Add production data to see profitability analysis</span>
         </div>
 
         <main class="dashboard-grid">
+            <!-- Dairy Farm Card -->
             <div class="farm-card dairy" onclick="navigateTo('dairy.html')">
-                <div class="farm-icon">
-                    <i class="fas fa-cow"></i>
-                </div>
-                <h2>Dairy Farm</h2>
-                <div class="farm-stats">
-                    <div class="stat">
-                        <span class="stat-label">Monthly Profit</span>
-                        <span class="stat-value" id="dairyProfit">KES 0</span>
+                <div class="farm-card-header">
+                    <div class="farm-icon">
+                        <i class="fas fa-cow"></i>
                     </div>
-                    <div class="stat">
-                        <span class="stat-label">Milk Production</span>
-                        <span class="stat-value" id="dairyMilk">0 L</span>
+                    <div class="farm-info">
+                        <h2>Dairy Farm</h2>
+                        <div class="farm-stats-compact">
+                            <span class="stat-item"><i class="fas fa-wine-bottle"></i> <span id="dairyMilk">0 L</span></span>
+                            <span class="stat-item"><i class="fas fa-money-bill-wave"></i> <span id="dairyProfit">KES 0</span></span>
+                        </div>
                     </div>
+                    <i class="fas fa-chevron-right"></i>
                 </div>
                 <div class="farm-status">
                     <span class="status-indicator inactive"></span>
-                    <span>No active production</span>
+                    <span>Tap to manage dairy farm</span>
                 </div>
             </div>
 
+            <!-- Poultry Farm Card -->
             <div class="farm-card poultry" onclick="navigateTo('poultry.html')">
-                <div class="farm-icon">
-                    <i class="fas fa-egg"></i>
-                </div>
-                <h2>Poultry Farm</h2>
-                <div class="farm-stats">
-                    <div class="stat">
-                        <span class="stat-label">Monthly Profit</span>
-                        <span class="stat-value" id="poultryProfit">KES 0</span>
+                <div class="farm-card-header">
+                    <div class="farm-icon">
+                        <i class="fas fa-egg"></i>
                     </div>
-                    <div class="stat">
-                        <span class="stat-label">Egg Production</span>
-                        <span class="stat-value" id="poultryEggs">0 Eggs</span>
+                    <div class="farm-info">
+                        <h2>Poultry Farm</h2>
+                        <div class="farm-stats-compact">
+                            <span class="stat-item"><i class="fas fa-egg"></i> <span id="poultryEggs">0 Eggs</span></span>
+                            <span class="stat-item"><i class="fas fa-money-bill-wave"></i> <span id="poultryProfit">KES 0</span></span>
+                        </div>
                     </div>
+                    <i class="fas fa-chevron-right"></i>
                 </div>
                 <div class="farm-status">
                     <span class="status-indicator inactive"></span>
-                    <span>No active production</span>
+                    <span>Tap to manage poultry farm</span>
                 </div>
             </div>
 
-            <div class="action-card report-card" onclick="navigateTo('master-report.html')">
-                <i class="fas fa-chart-bar card-icon"></i>
-                <h3>Master Report</h3>
-                <p>Comprehensive analysis of all livestock performance</p>
-                <button class="btn-generate">Generate Report</button>
-            </div>
-
-            <div class="action-card backup-card" onclick="backupData()">
-                <i class="fas fa-cloud-upload-alt card-icon"></i>
-                <h3>Backup Data</h3>
-                <p>Last backup: <span id="lastBackup">Never</span></p>
-                <button class="btn-backup"><i class="fas fa-save"></i> Backup Now</button>
-            </div>
-
-            <div class="action-card restore-card" onclick="restoreData()">
-                <i class="fas fa-cloud-download-alt card-icon"></i>
-                <h3>Restore Data</h3>
-                <p>Recover your farm data from cloud</p>
-                <button class="btn-restore"><i class="fas fa-history"></i> Restore</button>
-            </div>
-
-            <div class="action-card insights-card">
-                <i class="fas fa-lightbulb card-icon"></i>
-                <h3>Smart Insights</h3>
-                <p id="dailyInsight">Add your first production record to get insights</p>
-                <div class="insight-tags">
-                    <span class="tag">Efficiency</span>
-                    <span class="tag">Profit</span>
-                    <span class="tag">Health</span>
+            <!-- Action Cards -->
+            <div class="action-card" onclick="navigateTo('master-report.html')">
+                <div class="action-icon">
+                    <i class="fas fa-chart-bar"></i>
                 </div>
+                <div class="action-content">
+                    <h3>Master Report</h3>
+                    <p>Generate comprehensive farm reports</p>
+                </div>
+                <button class="btn-action">View</button>
+            </div>
+
+            <div class="action-card" onclick="backupData()">
+                <div class="action-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Backup Data</h3>
+                    <p>Last backup: <span id="lastBackup">Never</span></p>
+                </div>
+                <button class="btn-action">Backup</button>
+            </div>
+
+            <div class="action-card" onclick="restoreData()">
+                <div class="action-icon">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Restore Data</h3>
+                    <p>Recover from cloud backup</p>
+                </div>
+                <button class="btn-action">Restore</button>
             </div>
         </main>
 
-        <div class="quick-actions">
+        <!-- Quick Actions -->
+        <div class="quick-actions-section">
             <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-            <div class="action-buttons">
-                <button class="action-btn" onclick="addProduction('dairy')">
-                    <i class="fas fa-plus"></i> Add Milk Production
+            <div class="quick-action-buttons">
+                <button class="quick-action-btn" onclick="addProduction('dairy')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Milk</span>
                 </button>
-                <button class="action-btn" onclick="addProduction('poultry')">
-                    <i class="fas fa-plus"></i> Add Egg Count
+                <button class="quick-action-btn" onclick="addProduction('poultry')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Eggs</span>
                 </button>
-                <button class="action-btn" onclick="navigateTo('settings.html')">
-                    <i class="fas fa-cog"></i> Settings
+                <button class="quick-action-btn" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    <span>Export Data</span>
                 </button>
             </div>
         </div>
 
-        <footer class="main-footer">
-            <p>© 2025 AgriFlow | <span id="currentDate"></span> | <span id="version">v2.0</span></p>
-            <div class="footer-links">
-                <a href="#" onclick="showHelp()">Help</a>
-                <a href="#" onclick="showAbout()">About</a>
-                <a href="#" onclick="exportData()">Export Data</a>
+        <!-- Insights -->
+        <div class="insights-section">
+            <div class="insights-header">
+                <h3><i class="fas fa-lightbulb"></i> Smart Insights</h3>
+                <button class="btn-small" onclick="refreshInsights()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
-        </footer>
+            <div class="insights-content" id="dailyInsight">
+                <p>Add your first production record to get personalized insights</p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-btn active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="dairy.html" class="nav-btn">
+                <i class="fas fa-cow"></i>
+                <span>Dairy</span>
+            </a>
+            <a href="poultry.html" class="nav-btn">
+                <i class="fas fa-egg"></i>
+                <span>Poultry</span>
+            </a>
+            <a href="master-report.html" class="nav-btn">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-btn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
     </div>
 
     <div class="notification" id="notification"></div>
@@ -145,19 +169,44 @@
     <script src="js/app.js"></script>
     <script src="js/firebase.js"></script>
     <script>
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateDate();
             loadFarmData();
-            calculateProfitability();
-            checkLoginStatus();
             
-            // Register service worker for PWA
+            // Initialize PWA
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('js/service-worker.js');
+                navigator.serviceWorker.register('js/service-worker.js')
+                    .then(() => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker failed:', err));
             }
+            
+            // Set current date
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                dateElement.textContent = new Date().toLocaleDateString();
+            }
+            
+            // Update navigation active state
+            updateNavActiveState();
         });
+        
+        function updateNavActiveState() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('href') === currentPage) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function refreshInsights() {
+            const insight = document.getElementById('dailyInsight');
+            insight.innerHTML = '<p>Refreshing insights...</p>';
+            setTimeout(() => {
+                insight.innerHTML = '<p>✓ Record daily production for better insights<br>✓ Check animal health regularly<br>✓ Monitor feed consumption</p>';
+            }, 1000);
+        }
     </script>
 </body>
-
 </html>
