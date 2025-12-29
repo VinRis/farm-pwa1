@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_NAME = 'agriflow-v2';
+const CACHE_NAME = 'agriflow-v1';
 const urlsToCache = [
   '/farm-pwa1/',
   '/farm-pwa1/index.html',
@@ -8,11 +8,14 @@ const urlsToCache = [
   '/farm-pwa1/settings.html',
   '/farm-pwa1/master-report.html',
   '/farm-pwa1/css/style.css',
+  '/farm-pwa1/css/dark-mode.css',
   '/farm-pwa1/js/app.js',
+  '/farm-pwa1/js/charts.js',
   '/farm-pwa1/js/firebase.js',
   '/farm-pwa1/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+  'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
 // Install event
@@ -20,6 +23,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
+        console.log('Cache opened');
         return cache.addAll(urlsToCache);
       })
   );
@@ -35,10 +39,7 @@ self.addEventListener('fetch', event => {
           return response;
         }
         
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(
+        return fetch(event.request).then(
           response => {
             // Check if valid response
             if(!response || response.status !== 200 || response.type !== 'basic') {
@@ -55,7 +56,12 @@ self.addEventListener('fetch', event => {
             
             return response;
           }
-        );
+        ).catch(() => {
+          // If fetch fails and the request is for a page, return the offline page
+          if (event.request.headers.get('accept').includes('text/html')) {
+            return caches.match('/farm-pwa1/index.html');
+          }
+        });
       })
   );
 });
