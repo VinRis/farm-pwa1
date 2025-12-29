@@ -2,445 +2,316 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poultry Farm Dashboard - AgriFlow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poultry Farm - AgriFlow</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
-        <header class="dashboard-header">
-            <div class="farm-info">
-                <div class="farm-title">
-                    <i class="fas fa-egg"></i>
-                    <h2><span class="farm-name">My Farm</span> - Poultry</h2>
-                </div>
-                <p class="farm-location">Nairobi, Kenya</p>
-                <div class="farm-meta">
-                    <span class="meta-item"><i class="fas fa-user"></i> Manager: <span id="managerName">John Doe</span></span>
-                    <span class="meta-item"><i class="fas fa-calendar"></i> <span id="currentDate"></span></span>
+        <header class="main-header">
+            <div class="logo-container">
+                <button class="back-btn" onclick="navigateTo('index.html')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1>Poultry Farm</h1>
+                    <p class="tagline" id="farmName">My Farm</p>
                 </div>
             </div>
-            
-            <div class="header-actions">
-                <button class="btn-action" onclick="syncData()" title="Sync with Cloud">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-                <button class="btn-action" onclick="navigateTo('index.html')" title="Back to Home">
-                    <i class="fas fa-home"></i>
-                </button>
-                <button class="btn-action" onclick="navigateTo('settings.html')" title="Settings">
-                    <i class="fas fa-cog"></i>
-                </button>
-            </div>
+            <button class="menu-btn" onclick="navigateTo('settings.html')">
+                <i class="fas fa-cog"></i>
+            </button>
         </header>
 
         <!-- Quick Stats -->
-        <div class="quick-stats">
-            <div class="stat-card primary">
+        <div class="stats-grid">
+            <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-egg"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>Total Eggs (Month)</h3>
-                    <div class="stat-number" id="totalEggs">0</div>
-                    <div class="stat-change" id="eggChange">+0% from last month</div>
+                    <h3>Eggs Today</h3>
+                    <div class="stat-value" id="eggsToday">0</div>
                 </div>
             </div>
-
-            <div class="stat-card success">
+            
+            <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-money-bill-wave"></i>
                 </div>
                 <div class="stat-content">
                     <h3>Monthly Profit</h3>
-                    <div class="stat-number" id="monthlyProfit">KES 0</div>
-                    <div class="stat-change" id="profitChange">+0% from last month</div>
+                    <div class="stat-value" id="monthlyProfit">KES 0</div>
                 </div>
             </div>
-
-            <div class="stat-card warning">
+            
+            <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fas fa-kiwi-bird"></i>
+                    <i class="fas fa-dove"></i>
                 </div>
                 <div class="stat-content">
                     <h3>Total Birds</h3>
-                    <div class="stat-number" id="totalBirds">0</div>
-                    <div class="stat-breakdown" id="birdBreakdown">Layers: 0 | Broilers: 0 | Chicks: 0</div>
+                    <div class="stat-value" id="totalBirds">0</div>
                 </div>
             </div>
-
-            <div class="stat-card info">
+            
+            <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-percentage"></i>
                 </div>
                 <div class="stat-content">
                     <h3>Laying Rate</h3>
-                    <div class="stat-number" id="layingRate">0%</div>
-                    <div class="stat-change" id="rateChange">Daily average</div>
+                    <div class="stat-value" id="layingRate">0%</div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Egg Production Chart -->
-            <div class="dashboard-card full-width">
-                <div class="card-header">
-                    <h3><i class="fas fa-chart-line"></i> Egg Production Trend</h3>
-                    <select id="chartPeriod" onchange="updatePoultryChart()">
-                        <option value="7">Last 7 Days</option>
-                        <option value="30" selected>Last 30 Days</option>
-                        <option value="90">Last 90 Days</option>
-                    </select>
-                </div>
-                <div class="card-body">
-                    <canvas id="eggProductionChart"></canvas>
-                </div>
-            </div>
+        <!-- Action Buttons -->
+        <div class="action-bar">
+            <button class="action-btn primary" onclick="addEggProduction()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Eggs</span>
+            </button>
+            <button class="action-btn secondary" onclick="addBirds()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Birds</span>
+            </button>
+            <button class="action-btn secondary" onclick="recordVaccination()">
+                <i class="fas fa-syringe"></i>
+                <span>Vaccination</span>
+            </button>
+        </div>
 
-            <!-- Flock Management -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-dove"></i> Flock Status</h3>
-                    <button class="btn-small" onclick="addBird()">
-                        <i class="fas fa-plus"></i> Add Birds
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="flock-summary">
-                        <div class="flock-stat">
-                            <div class="flock-label">Layers</div>
-                            <div class="flock-value" id="totalLayers">0</div>
-                        </div>
-                        <div class="flock-stat">
-                            <div class="flock-label">Broilers</div>
-                            <div class="flock-value" id="totalBroilers">0</div>
-                        </div>
-                        <div class="flock-stat">
-                            <div class="flock-label">Chicks</div>
-                            <div class="flock-value" id="totalChicks">0</div>
-                        </div>
-                        <div class="flock-stat">
-                            <div class="flock-label">Mortality</div>
-                            <div class="flock-value" id="mortalityRate">0%</div>
-                        </div>
-                    </div>
-                    <div class="flock-health">
-                        <h4>Health Status</h4>
-                        <div class="health-meter">
-                            <div class="health-bar" id="flockHealthBar"></div>
-                            <span id="flockHealthPercent">0% Healthy</span>
-                        </div>
-                    </div>
-                </div>
+        <!-- Charts Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Egg Production</h2>
+                <select class="period-select" onchange="updatePoultryChart()">
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>30 Days</option>
+                    <option value="90">90 Days</option>
+                </select>
             </div>
-
-            <!-- Recent Activity -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
-                    <button class="btn-small" onclick="addProduction('eggs')">
-                        <i class="fas fa-plus"></i> Add Eggs
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="activity-list" id="recentActivity">
-                        <div class="empty-state">
-                            <i class="fas fa-info-circle"></i>
-                            <p>No activities recorded yet</p>
-                            <button class="btn-small" onclick="addProduction('eggs')">Add First Record</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="chart-container">
+                <canvas id="eggChart"></canvas>
             </div>
+        </div>
 
-            <!-- Smart Insights -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-lightbulb"></i> Smart Insights</h3>
-                </div>
-                <div class="card-body">
-                    <div class="insights-list" id="poultryInsights">
-                        <div class="insight-item">
-                            <i class="fas fa-info-circle"></i>
-                            <p>Start recording daily egg collection to get personalized insights</p>
-                        </div>
-                    </div>
-                    <div class="insight-categories">
-                        <span class="insight-tag">Feed</span>
-                        <span class="insight-tag">Health</span>
-                        <span class="insight-tag">Productivity</span>
-                    </div>
-                </div>
+        <!-- Recent Activity -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                <button class="btn-small" onclick="showAllActivities()">
+                    View All
+                </button>
             </div>
-
-            <!-- Feed & Consumption -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-seedling"></i> Feed Management</h3>
-                </div>
-                <div class="card-body">
-                    <div class="feed-summary">
-                        <div class="feed-stat">
-                            <div class="feed-label">Daily Feed/Bird</div>
-                            <div class="feed-value" id="feedPerBird">0.12 kg</div>
-                        </div>
-                        <div class="feed-stat">
-                            <div class="feed-label">Feed Conversion</div>
-                            <div class="feed-value" id="feedConversion">2.1:1</div>
-                        </div>
-                    </div>
-                    <div class="feed-reminder">
-                        <i class="fas fa-bell"></i>
-                        <p>Feed stock lasts <strong id="feedStockDays">14</strong> days</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vaccination Schedule -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-syringe"></i> Vaccination Schedule</h3>
-                </div>
-                <div class="card-body">
-                    <div class="vaccination-summary">
-                        <div class="vaccination-event upcoming">
-                            <i class="fas fa-shield-alt"></i>
-                            <div>
-                                <strong>Next Vaccination</strong>
-                                <p>Newcastle Vaccine - Due in 3 days</p>
-                            </div>
-                        </div>
-                        <div class="vaccination-event">
-                            <i class="fas fa-calendar-check"></i>
-                            <div>
-                                <strong>Last Vaccination</strong>
-                                <p>Gumboro - 2 weeks ago</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="activity-list" id="activityList">
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No activities recorded yet</p>
+                    <button class="btn-action" onclick="addEggProduction()">Add First Record</button>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions Panel -->
-        <div class="quick-actions-panel">
-            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-            <div class="action-grid">
-                <button class="action-btn" onclick="addProduction('eggs')">
-                    <i class="fas fa-egg"></i>
-                    <span>Record Eggs</span>
-                </button>
-                <button class="action-btn" onclick="addBird()">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Birds</span>
-                </button>
-                <button class="action-btn" onclick="recordMortality()">
-                    <i class="fas fa-skull-crossbones"></i>
-                    <span>Record Mortality</span>
-                </button>
-                <button class="action-btn" onclick="recordVaccination()">
-                    <i class="fas fa-syringe"></i>
-                    <span>Record Vaccination</span>
-                </button>
-                <button class="action-btn" onclick="generateReport('poultry')">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Generate Report</span>
-                </button>
-                <button class="action-btn" onclick="showFeedCalculator()">
+        <!-- Flock Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Flock Summary</h2>
+            </div>
+            <div class="flock-grid">
+                <div class="flock-card">
+                    <div class="flock-count" id="layers">0</div>
+                    <div class="flock-label">Layers</div>
+                </div>
+                <div class="flock-card">
+                    <div class="flock-count" id="broilers">0</div>
+                    <div class="flock-label">Broilers</div>
+                </div>
+                <div class="flock-card">
+                    <div class="flock-count" id="chicks">0</div>
+                    <div class="flock-label">Chicks</div>
+                </div>
+                <div class="flock-card">
+                    <div class="flock-count" id="mortality">0%</div>
+                    <div class="flock-label">Mortality</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feed Management -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-seedling"></i> Feed Management</h2>
+                <button class="btn-small" onclick="calculateFeed()">
                     <i class="fas fa-calculator"></i>
-                    <span>Feed Calculator</span>
                 </button>
+            </div>
+            <div class="feed-summary">
+                <div class="feed-item">
+                    <div class="feed-label">Daily Feed</div>
+                    <div class="feed-value" id="dailyFeed">0 kg</div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-label">Feed Cost/Day</div>
+                    <div class="feed-value" id="feedCost">KES 0</div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-label">Stock Remaining</div>
+                    <div class="feed-value" id="feedStock">0 days</div>
+                </div>
             </div>
         </div>
 
         <!-- Bottom Navigation -->
-        <nav class="nav-bar">
-            <a href="index.html" class="nav-item">
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-btn">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-            <a href="poultry.html" class="nav-item active">
+            <a href="dairy.html" class="nav-btn">
+                <i class="fas fa-cow"></i>
+                <span>Dairy</span>
+            </a>
+            <a href="poultry.html" class="nav-btn active">
                 <i class="fas fa-egg"></i>
-                <span>Dashboard</span>
+                <span>Poultry</span>
             </a>
-            <a href="#" class="nav-item" onclick="showHistory()">
-                <i class="fas fa-history"></i>
-                <span>History</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showFinance()">
-                <i class="fas fa-chart-line"></i>
-                <span>Finance</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showHealth()">
-                <i class="fas fa-heartbeat"></i>
-                    <span>Health</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showReports()">
-                <i class="fas fa-file-alt"></i>
+            <a href="master-report.html" class="nav-btn">
+                <i class="fas fa-chart-bar"></i>
                 <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-btn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
             </a>
         </nav>
     </div>
-
-    <!-- Notification -->
-    <div class="notification" id="notification"></div>
 
     <!-- Modals -->
     <div id="addEggsModal" class="modal">
         <div class="modal-content">
             <h3><i class="fas fa-egg"></i> Record Egg Collection</h3>
             <div class="form-group">
-                <label for="eggCount">Egg Count</label>
-                <input type="number" id="eggCount" min="0" placeholder="Enter number of eggs">
+                <label for="eggCount">Number of Eggs</label>
+                <input type="number" id="eggCount" min="0" placeholder="Enter count">
             </div>
             <div class="form-group">
                 <label for="brokenEggs">Broken Eggs</label>
-                <input type="number" id="brokenEggs" min="0" value="0" placeholder="Enter broken eggs">
+                <input type="number" id="brokenEggs" min="0" value="0" placeholder="Optional">
             </div>
-            <div class="form-group">
-                <label for="eggSize">Average Size</label>
-                <select id="eggSize">
-                    <option value="small">Small (&lt;45g)</option>
-                    <option value="medium" selected>Medium (45-55g)</option>
-                    <option value="large">Large (55-65g)</option>
-                    <option value="xlarge">Extra Large (&gt;65g)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="eggNotes">Notes (Optional)</label>
-                <textarea id="eggNotes" placeholder="Any observations..."></textarea>
-            </div>
-            <div class="modal-actions">
+            <div class="form-actions">
                 <button class="btn-secondary" onclick="closeModal('addEggsModal')">Cancel</button>
-                <button class="btn-primary" onclick="saveEggProduction()">Save Record</button>
+                <button class="btn-primary" onclick="saveEggProduction()">Save</button>
             </div>
         </div>
     </div>
 
     <script src="js/app.js"></script>
     <script src="js/charts.js"></script>
-    <script src="js/firebase.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize date
-            updateDate();
-            
-            // Load poultry data
             loadPoultryData();
-            
-            // Initialize chart
-            initEggChart();
-            
-            // Check for sync
-            checkSyncStatus();
+            updatePoultryChart();
+            updateNavActiveState();
         });
-
+        
         function loadPoultryData() {
-            // Load from localStorage or Firebase
             const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
-            const poultry = data.poultry || { eggProduction: [], birds: [], expenses: [] };
-            
-            // Update UI
+            const poultry = data.poultry || { eggProduction: [], birds: [] };
             updatePoultryUI(poultry);
+        }
+        
+        function updatePoultryUI(poultry) {
+            const today = new Date().toISOString().split('T')[0];
+            const todayEggs = poultry.eggProduction
+                .filter(p => p.date === today)
+                .reduce((sum, p) => sum + (p.count || 0), 0);
             
-            // Update chart
-            if (window.eggChart) {
-                updatePoultryChart();
+            const totalEggs = poultry.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0);
+            
+            document.getElementById('eggsToday').textContent = todayEggs;
+            document.getElementById('totalBirds').textContent = poultry.birds.length;
+            
+            updatePoultryActivityList(poultry.eggProduction.slice(-3).reverse());
+        }
+        
+        function updatePoultryActivityList(activities) {
+            const container = document.getElementById('activityList');
+            if (!activities || activities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No activities recorded yet</p>
+                        <button class="btn-action" onclick="addEggProduction()">Add First Record</button>
+                    </div>
+                `;
+                return;
             }
-        }
-
-        function updatePoultryUI(data) {
-            // Calculate totals
-            const totalEggs = data.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0);
-            const totalBirds = data.birds.length;
-            const layers = data.birds.filter(b => b.type === 'layer').length;
             
-            // Update display
-            document.getElementById('totalEggs').textContent = totalEggs;
-            document.getElementById('totalBirds').textContent = totalBirds;
-            document.getElementById('totalLayers').textContent = layers;
-            
-            // Calculate laying rate
-            const layingRate = layers > 0 ? ((totalEggs / (layers * 30)) * 100).toFixed(1) : 0;
-            document.getElementById('layingRate').textContent = layingRate + '%';
-            
-            // Update recent activity
-            updatePoultryActivity(data.eggProduction.slice(-5).reverse());
+            let html = '';
+            activities.forEach(activity => {
+                const date = new Date(activity.date).toLocaleDateString();
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-egg"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Egg Collection</div>
+                            <div class="activity-subtitle">${date}</div>
+                        </div>
+                        <div class="activity-value">${activity.count} eggs</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
         }
-
-        function addProduction(type) {
-            if (type === 'eggs') {
-                document.getElementById('addEggsModal').style.display = 'block';
-            }
+        
+        function addEggProduction() {
+            document.getElementById('addEggsModal').style.display = 'flex';
         }
-
+        
         function saveEggProduction() {
             const count = parseInt(document.getElementById('eggCount').value);
             const broken = parseInt(document.getElementById('brokenEggs').value) || 0;
-            const size = document.getElementById('eggSize').value;
-            const notes = document.getElementById('eggNotes').value;
             
             if (!count || count <= 0) {
-                alert('Please enter valid egg count');
+                alert('Please enter a valid egg count');
                 return;
             }
             
             const record = {
-                date: new Date().toISOString(),
+                date: new Date().toISOString().split('T')[0],
                 count: count,
-                broken: broken,
-                size: size,
-                notes: notes
+                broken: broken
             };
             
-            // Save to app
             if (window.app) {
                 window.app.addProduction('poultry', record);
             }
             
-            // Close modal and reset
             closeModal('addEggsModal');
             document.getElementById('eggCount').value = '';
             document.getElementById('brokenEggs').value = '0';
-            document.getElementById('eggNotes').value = '';
+            loadPoultryData();
         }
-
-        function addBird() {
-            const count = prompt('Enter number of birds to add:');
-            if (count && !isNaN(count)) {
-                const type = prompt('Enter type (Layer, Broiler, Chick):');
-                if (type) {
-                    // Add bird logic
-                    alert(`${count} ${type} birds added`);
-                }
-            }
-        }
-
+        
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
-
-        function syncData() {
-            if (window.app) {
-                window.app.backupToCloud().then(() => {
-                    showNotification('Data synced to cloud');
-                }).catch(() => {
-                    showNotification('Please login to sync', 'error');
-                });
-            }
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification show ${type}`;
-            setTimeout(() => notification.classList.remove('show'), 3000);
+        
+        function updateNavActiveState() {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('href') === 'poultry.html') {
+                    btn.classList.add('active');
+                }
+            });
         }
     </script>
 </body>
