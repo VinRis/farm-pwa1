@@ -1,0 +1,502 @@
+/* Dark Mode Styles for AgriFlow */
+
+/* Dark mode overrides */
+.dark-mode {
+    /* Color Variables */
+    --primary-color: #4caf50;
+    --secondary-color: #66bb6a;
+    --accent-color: #9ccc65;
+    --dairy-color: #64b5f6;
+    --poultry-color: #ffb74d;
+    --background: #121212;
+    --card-bg: #1e1e1e;
+    --surface-bg: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-muted: #888888;
+    --border-color: #404040;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --active-bg: rgba(76, 175, 80, 0.1);
+}
+
+/* Background and Text */
+.dark-mode body {
+    background-color: var(--background);
+    color: var(--text-primary);
+}
+
+/* Cards and Containers */
+.dark-mode .main-header,
+.dark-mode .farm-card,
+.dark-mode .action-card,
+.dark-mode .quick-actions,
+.dark-mode .dashboard-card,
+.dark-mode .stat-card,
+.dark-mode .dashboard-header,
+.dark-mode .report-section,
+.dark-mode .settings-section,
+.dark-mode .modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Weather Widget */
+.dark-mode .weather-widget {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+/* Profitability Banner */
+.dark-mode .profitability-banner {
+    background: var(--surface-bg);
+    border-left-color: var(--primary-color);
+}
+
+/* Buttons */
+.dark-mode .btn-primary,
+.dark-mode .btn-generate {
+    background: var(--primary-color);
+    color: white;
+}
+
+.dark-mode .btn-secondary {
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.dark-mode .btn-secondary:hover {
+    background: var(--hover-bg);
+}
+
+.dark-mode .btn-action {
+    background: var(--surface-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode .btn-action:hover {
+    background: var(--hover-bg);
+}
+
+.dark-mode .action-btn {
+    background: var(--surface-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode .action-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Navigation */
+.dark-mode .nav-bar {
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+}
+
+.dark-mode .nav-item {
+    color: var(--text-secondary);
+}
+
+.dark-mode .nav-item.active {
+    color: var(--primary-color);
+    background: var(--active-bg);
+}
+
+/* Forms */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.dark-mode input:focus,
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+    border-color: var(--primary-color);
+    background-color: var(--card-bg);
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Tables */
+.dark-mode table {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode th {
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode td {
+    border-color: var(--border-color);
+}
+
+.dark-mode tr:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Modals */
+.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.dark-mode .modal-content {
+    background-color: var(--card-bg);
+}
+
+/* Charts */
+.dark-mode canvas {
+    background-color: var(--card-bg);
+}
+
+/* Tabs */
+.dark-mode .tab-header {
+    background-color: var(--surface-bg);
+    color: var(--text-secondary);
+}
+
+.dark-mode .tab-header.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.dark-mode .tab-content {
+    background-color: var(--card-bg);
+}
+
+/* Status Indicators */
+.dark-mode .status-indicator.active {
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
+}
+
+.dark-mode .status-indicator.inactive {
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.7);
+}
+
+/* Insights and Tags */
+.dark-mode .insight-tag,
+.dark-mode .tag {
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode .insight-card.critical {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left: 4px solid #f44336;
+}
+
+.dark-mode .insight-card.opportunity {
+    background-color: rgba(255, 152, 0, 0.1);
+    border-left: 4px solid #ff9800;
+}
+
+.dark-mode .insight-card.recommendation {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+}
+
+/* Switch Toggle */
+.dark-mode .switch {
+    --switch-bg: var(--surface-bg);
+    --switch-border: var(--border-color);
+}
+
+.dark-mode .switch .slider {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .switch input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+.dark-mode .switch .slider:before {
+    background-color: var(--text-primary);
+}
+
+/* Notifications */
+.dark-mode .notification {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.dark-mode .notification.success {
+    border-left: 4px solid var(--primary-color);
+}
+
+.dark-mode .notification.error {
+    border-left: 4px solid #f44336;
+}
+
+.dark-mode .notification.info {
+    border-left: 4px solid #2196f3;
+}
+
+/* Empty States */
+.dark-mode .empty-state {
+    color: var(--text-secondary);
+}
+
+.dark-mode .empty-state i {
+    color: var(--text-muted);
+}
+
+/* Scrollbars */
+.dark-mode ::-webkit-scrollbar {
+    width: 10px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+    background: var(--surface-bg);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Loading States */
+.dark-mode .loading-spinner {
+    border-color: var(--border-color);
+    border-top-color: var(--primary-color);
+}
+
+/* Animations */
+@keyframes darkPulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.dark-mode .pulse-animation {
+    animation: darkPulse 2s infinite;
+}
+
+/* Print Styles for Dark Mode */
+@media print {
+    .dark-mode body {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .dark-mode .main-header,
+    .dark-mode .farm-card,
+    .dark-mode .action-card,
+    .dark-mode .dashboard-card {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ddd !important;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .dark-mode {
+        --border-color: #ffffff;
+        --text-secondary: #ffffff;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .dark-mode * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Specific Component Dark Mode Styles */
+
+/* Herd/Flock Summary */
+.dark-mode .herd-summary,
+.dark-mode .flock-summary {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .herd-stat,
+.dark-mode .flock-stat {
+    border-color: var(--border-color);
+}
+
+/* Health Meter */
+.dark-mode .health-meter {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .health-bar {
+    background: linear-gradient(90deg, var(--primary-color), #66bb6a);
+}
+
+/* Activity List */
+.dark-mode .activity-list {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .activity-item {
+    border-color: var(--border-color);
+}
+
+.dark-mode .activity-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Feed Calculator */
+.dark-mode .calculator {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .calculator-display {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Auth Modal */
+.dark-mode .auth-form {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .tab-buttons {
+    border-color: var(--border-color);
+}
+
+.dark-mode .tab-btn {
+    color: var(--text-secondary);
+}
+
+.dark-mode .tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* Report Footer */
+.dark-mode .report-footer {
+    border-top-color: var(--border-color);
+}
+
+.dark-mode .footer-info {
+    color: var(--text-secondary);
+}
+
+/* Download Cards */
+.dark-mode .download-card {
+    background-color: var(--surface-bg);
+    border-color: var(--border-color);
+}
+
+.dark-mode .download-card:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--primary-color);
+}
+
+/* Settings Page Specific */
+.dark-mode .setting-item {
+    border-color: var(--border-color);
+}
+
+.dark-mode .setting-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.dark-mode .about-content {
+    background-color: var(--surface-bg);
+    border-color: var(--border-color);
+}
+
+/* Badges and Indicators */
+.dark-mode .badge {
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.dark-mode .badge.warning {
+    background-color: #ff9800;
+}
+
+.dark-mode .badge.danger {
+    background-color: #f44336;
+}
+
+/* Tooltips */
+.dark-mode .tooltip {
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.dark-mode .tooltip:before {
+    border-top-color: var(--surface-bg);
+}
+
+/* Progress Bars */
+.dark-mode .progress-bar {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .progress-fill {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Calendar/Date Picker */
+.dark-mode .calendar {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+.dark-mode .calendar-header {
+    background-color: var(--surface-bg);
+}
+
+.dark-mode .calendar-day {
+    color: var(--text-primary);
+}
+
+.dark-mode .calendar-day:hover {
+    background-color: var(--hover-bg);
+}
+
+.dark-mode .calendar-day.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Responsive Adjustments for Dark Mode */
+@media (max-width: 768px) {
+    .dark-mode .dashboard-grid {
+        gap: 15px;
+    }
+    
+    .dark-mode .nav-bar {
+        padding: 10px;
+    }
+    
+    .dark-mode .modal-content {
+        margin: 10px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dark-mode .stat-card,
+    .dark-mode .farm-card {
+        padding: 15px;
+    }
+    
+    .dark-mode .action-buttons {
+        grid-template-columns: 1fr;
+    }
+}

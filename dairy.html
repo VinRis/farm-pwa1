@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dairy Farm Dashboard - AgriFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="farm-info">
+                <div class="farm-title">
+                    <i class="fas fa-cow"></i>
+                    <h2><span class="farm-name">My Farm</span> - Dairy</h2>
+                </div>
+                <p class="farm-location">Nairobi, Kenya</p>
+                <div class="farm-meta">
+                    <span class="meta-item"><i class="fas fa-user"></i> Manager: <span id="managerName">John Doe</span></span>
+                    <span class="meta-item"><i class="fas fa-calendar"></i> <span id="currentDate"></span></span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn-action" onclick="syncData()" title="Sync with Cloud">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn-action" onclick="navigateTo('index.html')" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button class="btn-action" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card primary">
+                <div class="stat-icon">
+                    <i class="fas fa-wine-bottle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Milk (Month)</h3>
+                    <div class="stat-number" id="totalMilk">0 L</div>
+                    <div class="stat-change" id="milkChange">+0% from last month</div>
+                </div>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Monthly Profit</h3>
+                    <div class="stat-number" id="monthlyProfit">KES 0</div>
+                    <div class="stat-change" id="profitChange">+0% from last month</div>
+                </div>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-icon">
+                    <i class="fas fa-cow"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Animals</h3>
+                    <div class="stat-number" id="totalAnimals">0</div>
+                    <div class="stat-breakdown" id="animalBreakdown">Milking: 0 | Dry: 0 | Calves: 0</div>
+                </div>
+            </div>
+
+            <div class="stat-card info">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Avg. Yield/Cow</h3>
+                    <div class="stat-number" id="avgYield">0 L</div>
+                    <div class="stat-change" id="yieldChange">Daily average</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Milk Production Chart -->
+            <div class="dashboard-card full-width">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-bar"></i> Milk Production Trend</h3>
+                    <select id="chartPeriod" onchange="updateChart()">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <canvas id="milkProductionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Herd Management -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> Herd Status</h3>
+                    <button class="btn-small" onclick="addAnimal()">
+                        <i class="fas fa-plus"></i> Add Animal
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="herd-summary">
+                        <div class="herd-stat">
+                            <div class="herd-label">Milking Cows</div>
+                            <div class="herd-value" id="milkingCows">0</div>
+                        </div>
+                        <div class="herd-stat">
+                            <div class="herd-label">Dry Cows</div>
+                            <div class="herd-value" id="dryCows">0</div>
+                        </div>
+                        <div class="herd-stat">
+                            <div class="herd-label">Calves</div>
+                            <div class="herd-value" id="calves">0</div>
+                        </div>
+                        <div class="herd-stat">
+                            <div class="herd-label">Pregnant</div>
+                            <div class="herd-value" id="pregnantCows">0</div>
+                        </div>
+                    </div>
+                    <div class="herd-health">
+                        <h4>Health Status</h4>
+                        <div class="health-meter">
+                            <div class="health-bar" id="healthBar"></div>
+                            <span id="healthPercent">0% Healthy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                    <button class="btn-small" onclick="addProduction('milk')">
+                        <i class="fas fa-plus"></i> Add Milk
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="activity-list" id="recentActivity">
+                        <div class="empty-state">
+                            <i class="fas fa-info-circle"></i>
+                            <p>No activities recorded yet</p>
+                            <button class="btn-small" onclick="addProduction('milk')">Add First Record</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Insights -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-lightbulb"></i> Smart Insights</h3>
+                </div>
+                <div class="card-body">
+                    <div class="insights-list" id="dairyInsights">
+                        <div class="insight-item">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Start recording daily milk production to get personalized insights</p>
+                        </div>
+                    </div>
+                    <div class="insight-categories">
+                        <span class="insight-tag">Nutrition</span>
+                        <span class="insight-tag">Health</span>
+                        <span class="insight-tag">Efficiency</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed & Nutrition -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-seedling"></i> Feed Management</h3>
+                </div>
+                <div class="card-body">
+                    <div class="feed-summary">
+                        <div class="feed-stat">
+                            <div class="feed-label">Daily Feed/Cow</div>
+                            <div class="feed-value" id="dailyFeed">0 kg</div>
+                        </div>
+                        <div class="feed-stat">
+                            <div class="feed-label">Feed Cost/Day</div>
+                            <div class="feed-value" id="feedCost">KES 0</div>
+                        </div>
+                    </div>
+                    <div class="feed-reminder">
+                        <i class="fas fa-bell"></i>
+                        <p>Next feed purchase in <strong id="feedDays">7</strong> days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breeding Calendar -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Breeding Calendar</h3>
+                </div>
+                <div class="card-body">
+                    <div class="breeding-summary">
+                        <div class="breeding-event upcoming">
+                            <i class="fas fa-baby"></i>
+                            <div>
+                                <strong>Next Calving</strong>
+                                <p>No upcoming events</p>
+                            </div>
+                        </div>
+                        <div class="breeding-event">
+                            <i class="fas fa-syringe"></i>
+                            <div>
+                                <strong>Next AI/Breeding</strong>
+                                <p>Schedule breeding cycle</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="quick-actions-panel">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="action-grid">
+                <button class="action-btn" onclick="addProduction('milk')">
+                    <i class="fas fa-wine-bottle"></i>
+                    <span>Record Milk</span>
+                </button>
+                <button class="action-btn" onclick="addAnimal()">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Animal</span>
+                </button>
+                <button class="action-btn" onclick="recordHealth()">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Health Check</span>
+                </button>
+                <button class="action-btn" onclick="addExpense()">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Add Expense</span>
+                </button>
+                <button class="action-btn" onclick="generateReport('dairy')">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Generate Report</span>
+                </button>
+                <button class="action-btn" onclick="showVetAlerts()">
+                    <i class="fas fa-bell"></i>
+                    <span>Vet Alerts</span>
+                    <span class="badge" id="vetAlertCount">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="dairy.html" class="nav-item active">
+                <i class="fas fa-cow"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showHistory()">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showFinance()">
+                <i class="fas fa-chart-line"></i>
+                <span>Finance</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showHealth()">
+                <i class="fas fa-heartbeat"></i>
+                <span>Health</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showReports()">
+                <i class="fas fa-file-alt"></i>
+                <span>Reports</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Modals -->
+    <div id="addMilkModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-wine-bottle"></i> Record Milk Production</h3>
+            <div class="form-group">
+                <label for="milkLiters">Milk Quantity (Liters)</label>
+                <input type="number" id="milkLiters" step="0.1" min="0" placeholder="Enter liters">
+            </div>
+            <div class="form-group">
+                <label for="milkQuality">Quality</label>
+                <select id="milkQuality">
+                    <option value="excellent">Excellent</option>
+                    <option value="good" selected>Good</option>
+                    <option value="average">Average</option>
+                    <option value="poor">Poor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="milkNotes">Notes (Optional)</label>
+                <textarea id="milkNotes" placeholder="Any observations..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('addMilkModal')">Cancel</button>
+                <button class="btn-primary" onclick="saveMilkProduction()">Save Record</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/firebase.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize date
+            updateDate();
+            
+            // Load dairy data
+            loadDairyData();
+            
+            // Initialize chart
+            initMilkChart();
+            
+            // Check for sync
+            checkSyncStatus();
+        });
+
+        function loadDairyData() {
+            // Load from localStorage or Firebase
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const dairy = data.dairy || { milkProduction: [], animals: [], expenses: [] };
+            
+            // Update UI
+            updateDairyUI(dairy);
+            
+            // Update chart
+            if (window.milkChart) {
+                updateChart();
+            }
+        }
+
+        function updateDairyUI(data) {
+            // Calculate totals
+            const totalMilk = data.milkProduction.reduce((sum, p) => sum + (p.liters || 0), 0);
+            const totalAnimals = data.animals.length;
+            const milkingCows = data.animals.filter(a => a.status === 'milking').length;
+            
+            // Update display
+            document.getElementById('totalMilk').textContent = totalMilk.toFixed(1) + ' L';
+            document.getElementById('totalAnimals').textContent = totalAnimals;
+            document.getElementById('milkingCows').textContent = milkingCows;
+            
+            // Update recent activity
+            updateActivityList(data.milkProduction.slice(-5).reverse());
+        }
+
+        function addProduction(type) {
+            if (type === 'milk') {
+                document.getElementById('addMilkModal').style.display = 'block';
+            }
+        }
+
+        function saveMilkProduction() {
+            const liters = parseFloat(document.getElementById('milkLiters').value);
+            const quality = document.getElementById('milkQuality').value;
+            const notes = document.getElementById('milkNotes').value;
+            
+            if (!liters || liters <= 0) {
+                alert('Please enter valid milk quantity');
+                return;
+            }
+            
+            const record = {
+                date: new Date().toISOString(),
+                liters: liters,
+                quality: quality,
+                notes: notes
+            };
+            
+            // Save to app
+            if (window.app) {
+                window.app.addProduction('dairy', record);
+            }
+            
+            // Close modal and reset
+            closeModal('addMilkModal');
+            document.getElementById('milkLiters').value = '';
+            document.getElementById('milkNotes').value = '';
+        }
+
+        function addAnimal() {
+            const name = prompt('Enter animal name or ID:');
+            if (name) {
+                const type = prompt('Enter type (Milking, Dry, Calf):');
+                if (type) {
+                    // Add animal logic
+                    alert(`Animal ${name} added as ${type}`);
+                }
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function syncData() {
+            if (window.app) {
+                window.app.backupToCloud().then(() => {
+                    showNotification('Data synced to cloud');
+                }).catch(() => {
+                    showNotification('Please login to sync', 'error');
+                });
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
