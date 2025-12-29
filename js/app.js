@@ -139,6 +139,7 @@ class AgriFlowApp {
         this.farmData.poultry.profit = poultryIncome - poultryExpenses;
     }
 
+    // REPLACE the calculateProfitability() method in app.js with:
     calculateProfitability() {
         const dairyProfit = this.farmData.dairy.profit;
         const poultryProfit = this.farmData.poultry.profit;
@@ -150,13 +151,16 @@ class AgriFlowApp {
             banner.innerHTML = '<i class="fas fa-info-circle"></i> Add production data to see profitability analysis';
             banner.style.background = '#f0f0f0';
         } else if (dairyProfit > poultryProfit) {
-            banner.innerHTML = `<i class="fas fa-trophy"></i> Dairy Farm is more profitable this month: ${this.settings.currency} ${dairyProfit}`;
+            const profitText = `${this.settings.currency} ${dairyProfit}`;
+            banner.innerHTML = `<i class="fas fa-trophy"></i> Dairy Farm is more profitable this month: ${profitText}`;
             banner.style.background = 'linear-gradient(135deg, #2196f3, #1976d2)';
         } else if (poultryProfit > dairyProfit) {
-            banner.innerHTML = `<i class="fas fa-trophy"></i> Poultry Farm is more profitable this month: ${this.settings.currency} ${poultryProfit}`;
+            const profitText = `${this.settings.currency} ${poultryProfit}`;
+            banner.innerHTML = `<i class="fas fa-trophy"></i> Poultry Farm is more profitable this month: ${profitText}`;
             banner.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
         } else {
-            banner.innerHTML = `<i class="fas fa-balance-scale"></i> Both farms are equally profitable: ${this.settings.currency} ${dairyProfit}`;
+            const profitText = `${this.settings.currency} ${dairyProfit}`;
+            banner.innerHTML = `<i class="fas fa-balance-scale"></i> Both farms are equally profitable: ${profitText}`;
             banner.style.background = 'linear-gradient(135deg, #4caf50, #388e3c)';
         }
     }
@@ -372,4 +376,36 @@ function exportData() {
     URL.revokeObjectURL(url);
     
     app.showNotification('Data exported successfully');
+
+    // Add this function to app.js (at the end, before the last closing bracket)
+    function updateDate() {
+        const dateElement = document.getElementById('currentDate');
+        if (dateElement) {
+            const now = new Date();
+            dateElement.textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    }
+    
+    // Also add these missing functions:
+    function checkLoginStatus() {
+        // Check if user is logged in
+        const user = localStorage.getItem('agriflowUser');
+        if (user) {
+            console.log('User logged in:', JSON.parse(user).email);
+        }
+    }
+    
+    function loadFarmData() {
+        // Load farm data from localStorage
+        const data = localStorage.getItem('agriflowData');
+        if (data) {
+            app.farmData = JSON.parse(data);
+            app.updateUI();
+        }
+    }
 }
