@@ -60,7 +60,7 @@ class AgriFlowApp {
         // Update farm name in header
         const farmNameElements = document.querySelectorAll('.farm-name');
         farmNameElements.forEach(el => {
-            el.textContent = this.settings.farmName;
+            if (el) el.textContent = this.settings.farmName;
         });
     }
 
@@ -86,9 +86,14 @@ class AgriFlowApp {
     }
 
     saveSettings() {
-        this.settings.farmName = document.getElementById('farmName').value;
-        this.settings.managerName = document.getElementById('managerName').value;
-        this.settings.location = document.getElementById('location').value;
+        const farmName = document.getElementById('farmName');
+        const managerName = document.getElementById('managerName');
+        const location = document.getElementById('location');
+        
+        if (farmName) this.settings.farmName = farmName.value;
+        if (managerName) this.settings.managerName = managerName.value;
+        if (location) this.settings.location = location.value;
+        
         this.applySettings();
         this.saveToStorage();
         this.showNotification('Settings saved successfully');
@@ -139,7 +144,6 @@ class AgriFlowApp {
         this.farmData.poultry.profit = poultryIncome - poultryExpenses;
     }
 
-    // REPLACE the calculateProfitability() method in app.js with:
     calculateProfitability() {
         const dairyProfit = this.farmData.dairy.profit;
         const poultryProfit = this.farmData.poultry.profit;
@@ -171,13 +175,13 @@ class AgriFlowApp {
             farmInfo: this.settings,
             summary: {
                 dairy: {
-                    totalMilk: this.farmData.dairy.milkProduction.reduce((sum, p) => sum + p.liters, 0),
+                    totalMilk: this.farmData.dairy.milkProduction.reduce((sum, p) => sum + (p.liters || 0), 0),
                     totalProfit: this.farmData.dairy.profit,
                     avgDailyMilk: this.calculateAverage('dairy'),
                     productionDays: this.farmData.dairy.milkProduction.length
                 },
                 poultry: {
-                    totalEggs: this.farmData.poultry.eggProduction.reduce((sum, p) => sum + p.count, 0),
+                    totalEggs: this.farmData.poultry.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0),
                     totalProfit: this.farmData.poultry.profit,
                     avgDailyEggs: this.calculateAverage('poultry'),
                     productionDays: this.farmData.poultry.eggProduction.length
@@ -193,11 +197,11 @@ class AgriFlowApp {
         if (type === 'dairy') {
             const data = this.farmData.dairy.milkProduction;
             if (data.length === 0) return 0;
-            return data.reduce((sum, p) => sum + p.liters, 0) / data.length;
+            return data.reduce((sum, p) => sum + (p.liters || 0), 0) / data.length;
         } else {
             const data = this.farmData.poultry.eggProduction;
             if (data.length === 0) return 0;
-            return data.reduce((sum, p) => sum + p.count, 0) / data.length;
+            return data.reduce((sum, p) => sum + (p.count || 0), 0) / data.length;
         }
     }
 
@@ -241,56 +245,44 @@ class AgriFlowApp {
 
     updateUI() {
         // Update dairy stats
-        document.getElementById('dairyProfit')?.textContent = 
-            `${this.settings.currency} ${this.farmData.dairy.profit}`;
-        document.getElementById('dairyMilk')?.textContent = 
-            `${this.farmData.dairy.milkProduction.reduce((sum, p) => sum + p.liters, 0)} L`;
+        const dairyProfitEl = document.getElementById('dairyProfit');
+        const dairyMilkEl = document.getElementById('dairyMilk');
+        const poultryProfitEl = document.getElementById('poultryProfit');
+        const poultryEggsEl = document.getElementById('poultryEggs');
+        
+        if (dairyProfitEl) {
+            dairyProfitEl.textContent = `${this.settings.currency} ${this.farmData.dairy.profit}`;
+        }
+        if (dairyMilkEl) {
+            const totalMilk = this.farmData.dairy.milkProduction.reduce((sum, p) => sum + (p.liters || 0), 0);
+            dairyMilkEl.textContent = `${totalMilk} L`;
+        }
         
         // Update poultry stats
-        document.getElementById('poultryProfit')?.textContent = 
-            `${this.settings.currency} ${this.farmData.poultry.profit}`;
-        document.getElementById('poultryEggs')?.textContent = 
-            `${this.farmData.poultry.eggProduction.reduce((sum, p) => sum + p.count, 0)} Eggs`;
+        if (poultryProfitEl) {
+            poultryProfitEl.textContent = `${this.settings.currency} ${this.farmData.poultry.profit}`;
+        }
+        if (poultryEggsEl) {
+            const totalEggs = this.farmData.poultry.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0);
+            poultryEggsEl.textContent = `${totalEggs} Eggs`;
+        }
         
         // Calculate and display profitability
         this.calculateProfitability();
     }
 
     backupToCloud() {
-        if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
-            const userId = firebase.auth().currentUser.uid;
-            return firebase.database().ref(`users/${userId}`).set({
-                data: this.farmData,
-                settings: this.settings,
-                lastBackup: new Date().toISOString()
-            });
-        } else {
-            this.showNotification('Please login to backup to cloud', 'error');
-            return Promise.reject('User not logged in');
-        }
+        return new Promise((resolve, reject) => {
+            this.showNotification('Backup feature requires Firebase setup', 'error');
+            reject('Firebase not configured');
+        });
     }
 
     restoreFromCloud() {
-        if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
-            const userId = firebase.auth().currentUser.uid;
-            return firebase.database().ref(`users/${userId}`).once('value')
-                .then(snapshot => {
-                    const data = snapshot.val();
-                    if (data) {
-                        this.farmData = data.data || this.farmData;
-                        this.settings = data.settings || this.settings;
-                        this.saveToStorage();
-                        this.applySettings();
-                        this.updateUI();
-                        this.showNotification('Data restored from cloud');
-                    } else {
-                        this.showNotification('No backup found in cloud', 'error');
-                    }
-                });
-        } else {
-            this.showNotification('Please login to restore from cloud', 'error');
-            return Promise.reject('User not logged in');
-        }
+        return new Promise((resolve, reject) => {
+            this.showNotification('Restore feature requires Firebase setup', 'error');
+            reject('Firebase not configured');
+        });
     }
 }
 
@@ -308,6 +300,8 @@ function backupData() {
         if (lastBackup) {
             lastBackup.textContent = new Date().toLocaleTimeString();
         }
+    }).catch(() => {
+        // Already handled in backupToCloud
     });
 }
 
@@ -351,6 +345,18 @@ function loadFarmData() {
     }, 1000);
 }
 
+function checkLoginStatus() {
+    // Check if user is logged in
+    const user = localStorage.getItem('agriflowUser');
+    if (user) {
+        console.log('User logged in:', JSON.parse(user).email);
+    }
+}
+
+function calculateProfitability() {
+    app.calculateProfitability();
+}
+
 function showHelp() {
     alert('AgriFlow Help:\n\n1. Click on Dairy/Poultry cards to view detailed dashboards\n2. Use Quick Actions for common tasks\n3. Backup regularly to cloud\n4. Generate reports for insights\n5. Configure settings for your farm');
 }
@@ -376,36 +382,19 @@ function exportData() {
     URL.revokeObjectURL(url);
     
     app.showNotification('Data exported successfully');
-
-    // Add this function to app.js (at the end, before the last closing bracket)
-    function updateDate() {
-        const dateElement = document.getElementById('currentDate');
-        if (dateElement) {
-            const now = new Date();
-            dateElement.textContent = now.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-    }
-    
-    // Also add these missing functions:
-    function checkLoginStatus() {
-        // Check if user is logged in
-        const user = localStorage.getItem('agriflowUser');
-        if (user) {
-            console.log('User logged in:', JSON.parse(user).email);
-        }
-    }
-    
-    function loadFarmData() {
-        // Load farm data from localStorage
-        const data = localStorage.getItem('agriflowData');
-        if (data) {
-            app.farmData = JSON.parse(data);
-            app.updateUI();
-        }
-    }
 }
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    updateDate();
+    loadFarmData();
+    calculateProfitability();
+    checkLoginStatus();
+    
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('js/service-worker.js').catch(error => {
+            console.log('Service Worker registration failed:', error);
+        });
+    }
+});
