@@ -208,5 +208,83 @@
             }, 1000);
         }
     </script>
+        <!-- Add this to the script section in index.html -->
+    <script>
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+        const dismissBtn = document.getElementById('dismissBtn');
+    
+        // Check if already installed
+        function isPWAInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone ||
+                   document.referrer.includes('android-app://');
+        }
+    
+        // Show install banner
+        function showInstallBanner() {
+            if (!isPWAInstalled() && !localStorage.getItem('installBannerDismissed')) {
+                setTimeout(() => {
+                    installBanner.style.display = 'flex';
+                }, 3000); // Show after 3 seconds
+            }
+        }
+    
+        // Handle install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallBanner();
+        });
+    
+        // Install button click
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('PWA installed');
+                    }
+                    deferredPrompt = null;
+                }
+                installBanner.style.display = 'none';
+            });
+        }
+    
+        // Dismiss button
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', () => {
+                installBanner.style.display = 'none';
+                localStorage.setItem('installBannerDismissed', 'true');
+            });
+        }
+    
+        // Check on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isPWAInstalled()) {
+                console.log('App is running as PWA');
+            } else {
+                showInstallBanner();
+            }
+        });
+    </script>
+        <!-- Add this section before closing body tag in index.html -->
+    <div class="pwa-install-banner" id="installBanner">
+        <div class="install-banner-content">
+            <i class="fas fa-mobile-alt"></i>
+            <div>
+                <h3>Install AgriFlow</h3>
+                <p>Get quick access to your farm management</p>
+            </div>
+        </div>
+        <div class="install-banner-actions">
+            <button class="btn-install" id="installBtn">Install</button>
+            <button class="btn-dismiss" id="dismissBtn">Later</button>
+        </div>
+    </div>
+
 </body>
 </html>
+
