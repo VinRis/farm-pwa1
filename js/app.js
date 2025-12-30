@@ -452,3 +452,78 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Add this method to your existing app.js:
+
+// Enhanced data synchronization method
+function syncData() {
+    const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+    
+    // Update all UI elements across pages
+    if (window.location.pathname.includes('dairy.html')) {
+        // Refresh dairy data
+        if (typeof loadDairyData === 'function') {
+            loadDairyData();
+        }
+        if (typeof updateChart === 'function') {
+            updateChart();
+        }
+    } else if (window.location.pathname.includes('poultry.html')) {
+        // Refresh poultry data
+        if (typeof loadPoultryData === 'function') {
+            loadPoultryData();
+        }
+        if (typeof updateChart === 'function') {
+            updateChart();
+        }
+    } else if (window.location.pathname.includes('master-report.html')) {
+        // Refresh report data
+        if (typeof generateReport === 'function') {
+            generateReport();
+        }
+    } else {
+        // Refresh home page data
+        if (typeof loadFarmData === 'function') {
+            loadFarmData();
+        }
+        if (typeof calculateProfitability === 'function') {
+            calculateProfitability();
+        }
+    }
+    
+    showNotification('Data synchronized successfully!');
+}
+
+// Event listener for data updates
+window.addEventListener('storage', function(event) {
+    if (event.key === 'agriflowData' || event.key === 'agriflowSettings') {
+        // Refresh current page data
+        syncData();
+    }
+});
+
+// Auto-refresh charts on data entry
+window.addEventListener('dataUpdated', function() {
+    syncData();
+});
+
+// Apply theme on all pages
+function applyThemeToAllPages() {
+    const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {};
+    if (settings.darkMode) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+}
+
+// Call this on every page load
+document.addEventListener('DOMContentLoaded', function() {
+    applyThemeToAllPages();
+    
+    // Also update farm name if element exists
+    const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {};
+    const farmNameEl = document.getElementById('farmName');
+    if (farmNameEl) {
+        farmNameEl.textContent = settings.farmName || 'My Farm';
+    }
+});
