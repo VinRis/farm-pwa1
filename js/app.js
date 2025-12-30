@@ -99,30 +99,83 @@ class AgriFlowApp {
         this.showNotification('Settings saved successfully');
     }
 
+    // Add these methods to your existing app.js class:
+    
+    // In the addProduction method, update to sync properly:
     addProduction(type, data) {
         const today = new Date().toISOString().split('T')[0];
         
         if (type === 'dairy') {
-            this.farmData.dairy.milkProduction.push({
+            // Get existing data
+            const existingData = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!existingData.dairy) existingData.dairy = { milkProduction: [] };
+            
+            // Add new record
+            existingData.dairy.milkProduction.push({
                 date: today,
                 liters: data.liters,
-                quality: data.quality || 'good',
-                notes: data.notes || ''
+                session: data.session,
+                quality: data.quality,
+                fatContent: data.fatContent,
+                proteinContent: data.proteinContent,
+                notes: data.notes,
+                timestamp: new Date().toISOString()
             });
+            
+            // Save back
+            localStorage.setItem('agriflowData', JSON.stringify(existingData));
+            
         } else if (type === 'poultry') {
-            this.farmData.poultry.eggProduction.push({
+            // Similar logic for poultry
+            const existingData = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!existingData.poultry) existingData.poultry = { eggProduction: [] };
+            
+            existingData.poultry.eggProduction.push({
                 date: today,
                 count: data.count,
-                broken: data.broken || 0,
-                notes: data.notes || ''
+                broken: data.broken,
+                size: data.size,
+                notes: data.notes,
+                timestamp: new Date().toISOString()
             });
+            
+            localStorage.setItem('agriflowData', JSON.stringify(existingData));
         }
         
+        // Recalculate and update
         this.calculateProfits();
-        this.saveToStorage();
         this.updateUI();
-        this.showNotification('Production added successfully');
+        this.showNotification('Record saved successfully!');
+        
+        // Dispatch custom event for chart updates
+        window.dispatchEvent(new CustomEvent('dataUpdated'));
     }
+    
+    // Add event listener for data updates
+    window.addEventListener('dataUpdated', function() {
+        // Refresh charts on dairy and poultry pages
+        if (typeof updateChart === 'function') {
+            updateChart();
+        }
+        if (typeof updatePoultryChart === 'function') {
+            updatePoultryChart();
+        }
+    });
+    
+    // Update theme across all pages
+    function applyTheme() {
+        const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {};
+        if (settings.darkMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    }
+    
+    // Apply theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        applyTheme();
+    });
 
     calculateProfits() {
         // Calculate dairy profit
@@ -398,3 +451,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
