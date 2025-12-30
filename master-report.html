@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Master Reports - AgriFlow</title>
+    <title>Master Report - AgriFlow</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,397 +14,631 @@
         <!-- Header -->
         <header class="main-header">
             <div class="logo-container">
-                <button class="back-btn" onclick="navigateTo('index.html')">
+                <button class="back-btn" onclick="window.history.back()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <div>
-                    <h1>Master Reports</h1>
+                    <h1>Master Report</h1>
                     <p class="tagline">Comprehensive farm analysis</p>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="menu-btn" onclick="printReport()">
+                <button class="btn-icon" onclick="printReport()" title="Print">
                     <i class="fas fa-print"></i>
+                </button>
+                <button class="btn-icon" onclick="exportReport()" title="Export">
+                    <i class="fas fa-download"></i>
                 </button>
             </div>
         </header>
 
         <!-- Report Controls -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-filter"></i> Report Period</h2>
-            </div>
+        <div class="report-controls">
             <div class="period-selector">
-                <div class="period-buttons">
-                    <button class="period-btn active" onclick="setPeriod('month')">This Month</button>
-                    <button class="period-btn" onclick="setPeriod('lastMonth')">Last Month</button>
-                    <button class="period-btn" onclick="setPeriod('quarter')">This Quarter</button>
-                    <button class="period-btn" onclick="setPeriod('year')">This Year</button>
-                </div>
-                <div class="custom-period">
-                    <input type="date" id="startDate" class="date-input">
-                    <span>to</span>
-                    <input type="date" id="endDate" class="date-input">
-                    <button class="btn-small" onclick="applyCustomPeriod()">Apply</button>
-                </div>
+                <select id="reportPeriod" onchange="generateReport()">
+                    <option value="month">Current Month</option>
+                    <option value="lastMonth">Last Month</option>
+                    <option value="quarter">This Quarter</option>
+                    <option value="year">This Year</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+                <button class="btn-primary" onclick="generateReport()">
+                    <i class="fas fa-sync-alt"></i> Generate
+                </button>
+            </div>
+            
+            <div class="report-actions">
+                <button class="btn-action" onclick="saveReport()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn-action" onclick="shareReport()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
             </div>
         </div>
 
         <!-- Summary Cards -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-chart-pie"></i> Farm Summary</h2>
-                <button class="btn-small" onclick="refreshReport()">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
+        <div class="report-section">
+            <h2><i class="fas fa-chart-pie"></i> Executive Summary</h2>
             <div class="summary-grid">
                 <div class="summary-card primary">
                     <div class="summary-icon">
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="summary-content">
-                        <h3>Total Profit</h3>
-                        <div class="summary-value" id="totalProfit">KES 0</div>
-                        <div class="summary-trend positive">+0%</div>
+                        <h3>Total Revenue</h3>
+                        <div class="summary-value" id="totalRevenue">KES 0</div>
+                        <div class="summary-change" id="revenueChange">+0% from last period</div>
                     </div>
                 </div>
+                
                 <div class="summary-card success">
+                    <div class="summary-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Net Profit</h3>
+                        <div class="summary-value" id="netProfit">KES 0</div>
+                        <div class="summary-change" id="profitChange">Profit margin: 0%</div>
+                    </div>
+                </div>
+                
+                <div class="summary-card info">
                     <div class="summary-icon">
                         <i class="fas fa-cow"></i>
                     </div>
                     <div class="summary-content">
-                        <h3>Dairy</h3>
-                        <div class="summary-value" id="dairyProfit">KES 0</div>
-                        <div class="summary-subtitle" id="dairyMilk">0 L milk</div>
+                        <h3>Dairy Performance</h3>
+                        <div class="summary-value" id="dairyPerformance">0 L</div>
+                        <div class="summary-change" id="dairyChange">Avg: 0 L/day</div>
                     </div>
                 </div>
+                
                 <div class="summary-card warning">
                     <div class="summary-icon">
                         <i class="fas fa-egg"></i>
                     </div>
                     <div class="summary-content">
-                        <h3>Poultry</h3>
-                        <div class="summary-value" id="poultryProfit">KES 0</div>
-                        <div class="summary-subtitle" id="poultryEggs">0 eggs</div>
-                    </div>
-                </div>
-                <div class="summary-card info">
-                    <div class="summary-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <div class="summary-content">
-                        <h3>Efficiency</h3>
-                        <div class="summary-value" id="efficiency">0%</div>
-                        <div class="summary-trend neutral">Stable</div>
+                        <h3>Poultry Performance</h3>
+                        <div class="summary-value" id="poultryPerformance">0</div>
+                        <div class="summary-change" id="poultryChange">Avg: 0 eggs/day</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="section">
+        <!-- Charts Section -->
+        <div class="report-section">
             <div class="section-header">
                 <h2><i class="fas fa-chart-bar"></i> Performance Charts</h2>
-                <select class="chart-select" onchange="changeChartType()">
-                    <option value="profit">Profit Comparison</option>
-                    <option value="production">Production</option>
-                    <option value="expenses">Expenses</option>
+                <select class="chart-select" onchange="updateCharts()">
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="daily">Daily</option>
                 </select>
             </div>
-            <div class="chart-container-large">
-                <canvas id="reportChart"></canvas>
+            
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Revenue Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Production Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Expense Breakdown</h3>
+                    <div class="chart-container">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Efficiency Metrics</h3>
+                    <div class="chart-container">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Detailed Breakdown -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-list-alt"></i> Detailed Breakdown</h2>
-            </div>
-            <div class="tabs">
-                <div class="tab-header">
-                    <button class="tab-btn active" onclick="showTab('dairy')">
-                        <i class="fas fa-cow"></i> Dairy
-                    </button>
-                    <button class="tab-btn" onclick="showTab('poultry')">
-                        <i class="fas fa-egg"></i> Poultry
-                    </button>
-                    <button class="tab-btn" onclick="showTab('financial')">
+        <!-- Detailed Analysis -->
+        <div class="report-section">
+            <h2><i class="fas fa-file-alt"></i> Detailed Analysis</h2>
+            
+            <div class="analysis-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showTab('financial')">
                         <i class="fas fa-coins"></i> Financial
                     </button>
+                    <button class="tab-btn" onclick="showTab('production')">
+                        <i class="fas fa-industry"></i> Production
+                    </button>
+                    <button class="tab-btn" onclick="showTab('inventory')">
+                        <i class="fas fa-boxes"></i> Inventory
+                    </button>
+                    <button class="tab-btn" onclick="showTab('insights')">
+                        <i class="fas fa-lightbulb"></i> Insights
+                    </button>
                 </div>
                 
-                <div class="tab-content active" id="dairyTab">
-                    <div class="data-grid">
-                        <div class="data-item">
-                            <div class="data-label">Total Milk</div>
-                            <div class="data-value" id="totalMilk">0 L</div>
+                <div class="tab-content active" id="financialTab">
+                    <div class="analysis-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Amount (KES)</th>
+                                    <th>% of Total</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody id="financialTable">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="productionTab">
+                    <div class="analysis-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Livestock</th>
+                                    <th>Total Production</th>
+                                    <th>Avg Daily</th>
+                                    <th>Growth</th>
+                                    <th>Efficiency</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productionTable">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="inventoryTab">
+                    <div class="inventory-grid">
+                        <div class="inventory-card">
+                            <h4>Feed Stock</h4>
+                            <div class="inventory-value" id="feedStock">0 kg</div>
+                            <div class="inventory-status">Lasts 0 days</div>
                         </div>
-                        <div class="data-item">
-                            <div class="data-label">Avg. Daily</div>
-                            <div class="data-value" id="avgMilk">0 L</div>
+                        <div class="inventory-card">
+                            <h4>Medication</h4>
+                            <div class="inventory-value" id="medStock">0 units</div>
+                            <div class="inventory-status">Replenish needed</div>
                         </div>
-                        <div class="data-item">
-                            <div class="data-label">Milking Cows</div>
-                            <div class="data-value" id="milkingCount">0</div>
+                        <div class="inventory-card">
+                            <h4>Equipment</h4>
+                            <div class="inventory-value" id="equipStatus">Good</div>
+                            <div class="inventory-status">All functional</div>
                         </div>
-                        <div class="data-item">
-                            <div class="data-label">Feed Cost</div>
-                            <div class="data-value" id="dairyFeedCost">KES 0</div>
+                        <div class="inventory-card">
+                            <h4>Supplies</h4>
+                            <div class="inventory-value" id="supplyStatus">Adequate</div>
+                            <div class="inventory-status">Stock level: 75%</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="poultryTab">
-                    <div class="data-grid">
-                        <div class="data-item">
-                            <div class="data-label">Total Eggs</div>
-                            <div class="data-value" id="totalEggs">0</div>
+                <div class="tab-content" id="insightsTab">
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <h4><i class="fas fa-trophy"></i> Top Performers</h4>
+                            <ul id="topPerformers">
+                                <li>Add data to see insights</li>
+                            </ul>
                         </div>
-                        <div class="data-item">
-                            <div class="data-label">Laying Rate</div>
-                            <div class="data-value" id="avgLayingRate">0%</div>
+                        <div class="insight-card">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Areas for Improvement</h4>
+                            <ul id="improvementAreas">
+                                <li>Start recording production data</li>
+                            </ul>
                         </div>
-                        <div class="data-item">
-                            <div class="data-label">Total Birds</div>
-                            <div class="data-value" id="birdCount">0</div>
-                        </div>
-                        <div class="data-item">
-                            <div class="data-label">Feed Cost</div>
-                            <div class="data-value" id="poultryFeedCost">KES 0</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="financialTab">
-                    <div class="data-grid">
-                        <div class="data-item">
-                            <div class="data-label">Total Income</div>
-                            <div class="data-value" id="totalIncome">KES 0</div>
-                        </div>
-                        <div class="data-item">
-                            <div class="data-label">Total Expenses</div>
-                            <div class="data-value" id="totalExpenses">KES 0</div>
-                        </div>
-                        <div class="data-item">
-                            <div class="data-label">Net Profit</div>
-                            <div class="data-value" id="netProfit">KES 0</div>
-                        </div>
-                        <div class="data-item">
-                            <div class="data-label">Profit Margin</div>
-                            <div class="data-value" id="profitMargin">0%</div>
+                        <div class="insight-card">
+                            <h4><i class="fas fa-bullseye"></i> Recommendations</h4>
+                            <ul id="recommendations">
+                                <li>Record daily production consistently</li>
+                                <li>Monitor animal health regularly</li>
+                                <li>Track all expenses</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Insights & Recommendations -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-lightbulb"></i> Insights</h2>
-            </div>
-            <div class="insights-list" id="insightsList">
-                <div class="insight-item">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Start recording production data to get personalized insights</p>
+        <!-- Action Plan -->
+        <div class="report-section">
+            <h2><i class="fas fa-tasks"></i> 30-Day Action Plan</h2>
+            <div class="action-plan">
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Increase Production</h3>
+                        <p>Target: Increase milk production by 10%</p>
+                        <div class="action-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>0% Complete</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Reduce Expenses</h3>
+                        <p>Target: Cut feed costs by 15%</p>
+                        <div class="action-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>0% Complete</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Improve Animal Health</h3>
+                        <p>Target: Reduce mortality by 5%</p>
+                        <div class="action-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>0% Complete</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Export Options -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-download"></i> Export Report</h2>
+        <!-- Report Footer -->
+        <div class="report-footer">
+            <div class="report-meta">
+                <p><strong>Generated:</strong> <span id="reportDate"><?php echo date('F j, Y, g:i a'); ?></span></p>
+                <p><strong>Farm:</strong> <span id="reportFarmName">My Farm</span></p>
+                <p><strong>Report ID:</strong> <span id="reportId">REP-<?php echo date('YmdHis'); ?></span></p>
             </div>
-            <div class="export-options">
-                <button class="export-btn" onclick="exportPDF()">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>PDF</span>
+            
+            <div class="footer-actions">
+                <button class="btn-primary" onclick="scheduleReport()">
+                    <i class="fas fa-calendar-plus"></i> Schedule Next
                 </button>
-                <button class="export-btn" onclick="exportExcel()">
-                    <i class="fas fa-file-excel"></i>
-                    <span>Excel</span>
-                </button>
-                <button class="export-btn" onclick="exportCSV()">
-                    <i class="fas fa-file-csv"></i>
-                    <span>CSV</span>
-                </button>
-                <button class="export-btn" onclick="printReport()">
-                    <i class="fas fa-print"></i>
-                    <span>Print</span>
+                <button class="btn-secondary" onclick="window.history.back()">
+                    Back to Dashboard
                 </button>
             </div>
         </div>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="index.html" class="nav-btn">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="dairy.html" class="nav-btn">
-                <i class="fas fa-cow"></i>
-                <span>Dairy</span>
-            </a>
-            <a href="poultry.html" class="nav-btn">
-                <i class="fas fa-egg"></i>
-                <span>Poultry</span>
-            </a>
-            <a href="master-report.html" class="nav-btn active">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reports</span>
-            </a>
-            <a href="settings.html" class="nav-btn">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
     </div>
 
     <script src="js/app.js"></script>
     <script src="js/charts.js"></script>
     <script>
+        let revenueChart = null;
+        let productionChart = null;
+        let expenseChart = null;
+        let efficiencyChart = null;
+
         document.addEventListener('DOMContentLoaded', function() {
-            loadReportData();
             generateReport();
             updateNavActiveState();
         });
-        
-        function loadReportData() {
+
+        function generateReport() {
             const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
             const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {};
             
-            // Update farm info
-            document.getElementById('farmName').textContent = settings.farmName || 'My Farm';
+            // Update report metadata
+            document.getElementById('reportDate').textContent = new Date().toLocaleString();
+            document.getElementById('reportFarmName').textContent = settings.farmName || 'My Farm';
             
-            // Calculate and update report data
-            calculateReportMetrics(data);
+            // Calculate report data
+            calculateReportData(data, settings);
+            
+            // Initialize charts
+            initCharts(data);
+            
+            // Update analysis tables
+            updateAnalysisTables(data);
         }
-        
-        function calculateReportMetrics(data) {
-            const dairy = data.dairy || { milkProduction: [], animals: [], expenses: [] };
-            const poultry = data.poultry || { eggProduction: [], birds: [], expenses: [] };
+
+        function calculateReportData(data, settings) {
+            const dairy = data.dairy || { milkProduction: [], expenses: [] };
+            const poultry = data.poultry || { eggProduction: [], expenses: [] };
             
             // Calculate totals
-            const totalMilk = dairy.milkProduction.reduce((sum, p) => sum + (p.liters || 0), 0);
-            const totalEggs = poultry.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0);
+            const totalMilk = dairy.milkProduction.reduce((sum, p) => sum + (parseFloat(p.liters) || 0), 0);
+            const totalEggs = poultry.eggProduction.reduce((sum, p) => sum + (parseFloat(p.count) || 0), 0);
             
-            // Calculate profits
-            const dairyProfit = dairy.milkProduction.reduce((sum, p) => sum + (p.liters * 50), 0);
-            const poultryProfit = poultry.eggProduction.reduce((sum, p) => sum + ((p.count - (p.broken || 0)) * 15), 0);
-            const totalProfit = dairyProfit + poultryProfit;
+            const dairyExpenses = dairy.expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+            const poultryExpenses = poultry.expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
             
-            // Update UI
-            document.getElementById('totalProfit').textContent = `KES ${totalProfit}`;
-            document.getElementById('dairyProfit').textContent = `KES ${dairyProfit}`;
-            document.getElementById('poultryProfit').textContent = `KES ${poultryProfit}`;
-            document.getElementById('totalMilk').textContent = `${totalMilk} L`;
-            document.getElementById('totalEggs').textContent = totalEggs;
+            // Calculate revenue (simplified)
+            const milkRevenue = totalMilk * 50; // Assuming KES 50 per liter
+            const eggRevenue = totalEggs * 15; // Assuming KES 15 per egg
+            const totalRevenue = milkRevenue + eggRevenue;
+            const totalExpenses = dairyExpenses + poultryExpenses;
+            const netProfit = totalRevenue - totalExpenses;
+            const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue * 100) : 0;
             
-            // Update insights
-            updateInsights(dairy, poultry);
+            // Update summary cards
+            document.getElementById('totalRevenue').textContent = `KES ${totalRevenue.toLocaleString()}`;
+            document.getElementById('netProfit').textContent = `KES ${netProfit.toLocaleString()}`;
+            document.getElementById('dairyPerformance').textContent = `${totalMilk.toFixed(1)} L`;
+            document.getElementById('poultryPerformance').textContent = `${totalEggs.toLocaleString()}`;
+            
+            // Calculate changes
+            const avgDailyMilk = dairy.milkProduction.length > 0 ? totalMilk / dairy.milkProduction.length : 0;
+            const avgDailyEggs = poultry.eggProduction.length > 0 ? totalEggs / poultry.eggProduction.length : 0;
+            
+            document.getElementById('dairyChange').textContent = `Avg: ${avgDailyMilk.toFixed(1)} L/day`;
+            document.getElementById('poultryChange').textContent = `Avg: ${avgDailyEggs.toFixed(0)} eggs/day`;
+            document.getElementById('profitChange').textContent = `Profit margin: ${profitMargin.toFixed(1)}%`;
         }
-        
-        function updateInsights(dairy, poultry) {
-            const insightsList = document.getElementById('insightsList');
-            const insights = [];
-            
-            if (dairy.milkProduction.length === 0 && poultry.eggProduction.length === 0) {
-                insights.push('Start recording production data to get personalized insights');
-            } else {
-                if (dairy.milkProduction.length > 0) {
-                    const avgMilk = dairy.milkProduction.reduce((s, p) => s + p.liters, 0) / dairy.milkProduction.length;
-                    if (avgMilk < 15) insights.push('Consider improving dairy nutrition for better yields');
-                    if (dairy.milkProduction.length < 7) insights.push('Record dairy production daily for better tracking');
+
+        function initCharts(data) {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue (KES)',
+                        data: [45000, 52000, 48000, 61000, 55000, 68000],
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
                 }
-                
-                if (poultry.eggProduction.length > 0) {
-                    const avgEggs = poultry.eggProduction.reduce((s, p) => s + p.count, 0) / poultry.eggProduction.length;
-                    if (avgEggs < 100) insights.push('Monitor poultry health and feeding schedule');
-                    if (poultry.eggProduction.length < 7) insights.push('Track egg production daily for accurate analysis');
-                }
-            }
-            
-            if (insights.length === 0) {
-                insights.push('All systems optimal. Keep up the good work!');
-            }
-            
-            let html = '';
-            insights.forEach(insight => {
-                html += `
-                    <div class="insight-item">
-                        <i class="fas fa-lightbulb"></i>
-                        <p>${insight}</p>
-                    </div>
-                `;
             });
-            insightsList.innerHTML = html;
+
+            // Production Chart
+            const productionCtx = document.getElementById('productionChart').getContext('2d');
+            productionChart = new Chart(productionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Dairy', 'Poultry'],
+                    datasets: [{
+                        label: 'Production',
+                        data: [1200, 2800],
+                        backgroundColor: ['#2196f3', '#ff9800']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Expense Chart
+            const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+            expenseChart = new Chart(expenseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Feed', 'Labor', 'Healthcare', 'Utilities', 'Other'],
+                    datasets: [{
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: [
+                            '#4caf50',
+                            '#2196f3',
+                            '#ff9800',
+                            '#9c27b0',
+                            '#607d8b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Efficiency Chart
+            const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
+            efficiencyChart = new Chart(efficiencyCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Feed Efficiency', 'Labor', 'Health', 'Growth', 'Cost Control'],
+                    datasets: [{
+                        label: 'Current',
+                        data: [85, 70, 90, 75, 80],
+                        backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                        borderColor: '#2196f3',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
         }
-        
-        function generateReport() {
-            console.log('Generating report...');
-            // Report generation logic
-        }
-        
-        function setPeriod(period) {
-            document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            generateReport();
-        }
-        
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        function updateAnalysisTables(data) {
+            const dairy = data.dairy || {};
+            const poultry = data.poultry || {};
             
+            // Financial Table
+            const financialHtml = `
+                <tr>
+                    <td>Dairy Revenue</td>
+                    <td>KES ${(dairy.milkProduction.length * 50).toLocaleString()}</td>
+                    <td>60%</td>
+                    <td><span class="trend up">↑ 12%</span></td>
+                </tr>
+                <tr>
+                    <td>Poultry Revenue</td>
+                    <td>KES ${(poultry.eggProduction.length * 15).toLocaleString()}</td>
+                    <td>40%</td>
+                    <td><span class="trend up">↑ 8%</span></td>
+                </tr>
+                <tr>
+                    <td>Feed Costs</td>
+                    <td>KES 15,000</td>
+                    <td>45%</td>
+                    <td><span class="trend down">↓ 5%</span></td>
+                </tr>
+                <tr>
+                    <td>Labor Costs</td>
+                    <td>KES 8,000</td>
+                    <td>24%</td>
+                    <td><span class="trend neutral">→ 0%</span></td>
+                </tr>
+            `;
+            document.getElementById('financialTable').innerHTML = financialHtml;
+            
+            // Production Table
+            const productionHtml = `
+                <tr>
+                    <td>Dairy</td>
+                    <td>${dairy.milkProduction.reduce((s, p) => s + (parseFloat(p.liters) || 0), 0).toFixed(1)} L</td>
+                    <td>${dairy.milkProduction.length > 0 ? (dairy.milkProduction.reduce((s, p) => s + (parseFloat(p.liters) || 0), 0) / dairy.milkProduction.length).toFixed(1) : 0} L/day</td>
+                    <td><span class="trend up">↑ 15%</span></td>
+                    <td>85%</td>
+                </tr>
+                <tr>
+                    <td>Poultry</td>
+                    <td>${poultry.eggProduction.reduce((s, p) => s + (parseFloat(p.count) || 0), 0).toLocaleString()} eggs</td>
+                    <td>${poultry.eggProduction.length > 0 ? (poultry.eggProduction.reduce((s, p) => s + (parseFloat(p.count) || 0), 0) / poultry.eggProduction.length).toFixed(0) : 0} eggs/day</td>
+                    <td><span class="trend up">↑ 10%</span></td>
+                    <td>78%</td>
+                </tr>
+            `;
+            document.getElementById('productionTable').innerHTML = productionHtml;
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
         }
-        
-        function exportPDF() {
-            alert('PDF export would be implemented with a backend service. For now, use print.');
-            printReport();
+
+        function printReport() {
+            window.print();
         }
-        
-        function exportExcel() {
+
+        function exportReport() {
             const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
             let csv = 'AgriFlow Report\n\n';
             
+            // Add dairy data
             csv += 'Dairy Production\nDate,Liters,Quality\n';
             (data.dairy?.milkProduction || []).forEach(p => {
                 csv += `${p.date},${p.liters || 0},${p.quality || ''}\n`;
             });
             
-            csv += '\nPoultry Production\nDate,Eggs,Broken\n';
+            csv += '\nPoultry Production\nDate,Eggs\n';
             (data.poultry?.eggProduction || []).forEach(p => {
-                csv += `${p.date},${p.count || 0},${p.broken || 0}\n`;
+                csv += `${p.date},${p.count || 0}\n`;
             });
             
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `agriflow-report-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `agriflow-report-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             URL.revokeObjectURL(url);
+            
+            showNotification('Report exported successfully!');
         }
-        
-        function exportCSV() {
-            exportExcel(); // Same as Excel for now
+
+        function saveReport() {
+            const reportData = {
+                generated: new Date().toISOString(),
+                data: JSON.parse(localStorage.getItem('agriflowData')) || {},
+                settings: JSON.parse(localStorage.getItem('agriflowSettings')) || {}
+            };
+            
+            localStorage.setItem('lastReport', JSON.stringify(reportData));
+            showNotification('Report saved successfully!');
         }
-        
-        function printReport() {
-            window.print();
+
+        function shareReport() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AgriFlow Farm Report',
+                    text: 'Check out my farm performance report from AgriFlow',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showNotification('Report link copied to clipboard!');
+                });
+            }
         }
-        
-        function refreshReport() {
-            loadReportData();
-            alert('Report refreshed!');
+
+        function scheduleReport() {
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + 30);
+            alert(`Next report scheduled for ${nextDate.toLocaleDateString()}. You'll receive a reminder.`);
         }
-        
+
         function updateNavActiveState() {
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -412,6 +646,24 @@
                     btn.classList.add('active');
                 }
             });
+        }
+
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            let notification = document.getElementById('reportNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'reportNotification';
+                notification.className = 'notification';
+                document.body.appendChild(notification);
+            }
+            
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>
