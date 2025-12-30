@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <header class="main-header">
+        <header class="main-header glass">
             <div class="logo-container">
                 <button class="back-btn" onclick="navigateTo('index.html')">
                     <i class="fas fa-arrow-left"></i>
@@ -22,9 +22,14 @@
                     <p class="tagline" id="farmName">My Farm</p>
                 </div>
             </div>
-            <button class="menu-btn" onclick="navigateTo('settings.html')">
-                <i class="fas fa-cog"></i>
-            </button>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="syncData()" title="Sync Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn-icon" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
         </header>
 
         <!-- Quick Stats -->
@@ -34,8 +39,9 @@
                     <i class="fas fa-egg"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>Eggs Today</h3>
+                    <h3>Today's Eggs</h3>
                     <div class="stat-value" id="eggsToday">0</div>
+                    <div class="stat-change" id="eggChange">+0%</div>
                 </div>
             </div>
             
@@ -46,16 +52,18 @@
                 <div class="stat-content">
                     <h3>Monthly Profit</h3>
                     <div class="stat-value" id="monthlyProfit">KES 0</div>
+                    <div class="stat-change" id="profitChange">vs last month</div>
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fas fa-dove"></i>
+                    <i class="fas fa-kiwi-bird"></i>
                 </div>
                 <div class="stat-content">
                     <h3>Total Birds</h3>
                     <div class="stat-value" id="totalBirds">0</div>
+                    <div class="stat-change" id="birdChange">healthy</div>
                 </div>
             </div>
             
@@ -66,31 +74,36 @@
                 <div class="stat-content">
                     <h3>Laying Rate</h3>
                     <div class="stat-value" id="layingRate">0%</div>
+                    <div class="stat-change" id="rateChange">per hen</div>
                 </div>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-bar">
-            <button class="action-btn primary" onclick="addEggProduction()">
-                <i class="fas fa-plus-circle"></i>
+            <button class="action-btn primary" onclick="showAddEggsModal()">
+                <i class="fas fa-egg"></i>
                 <span>Add Eggs</span>
             </button>
-            <button class="action-btn secondary" onclick="addBirds()">
+            <button class="action-btn secondary" onclick="showAddBirdModal()">
                 <i class="fas fa-plus-circle"></i>
                 <span>Add Birds</span>
             </button>
-            <button class="action-btn secondary" onclick="recordVaccination()">
-                <i class="fas fa-syringe"></i>
-                <span>Vaccination</span>
+            <button class="action-btn secondary" onclick="showAddExpenseModal()">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Add Expense</span>
+            </button>
+            <button class="action-btn secondary" onclick="showFlockView()">
+                <i class="fas fa-list"></i>
+                <span>View Flock</span>
             </button>
         </div>
 
-        <!-- Charts Section -->
-        <div class="section">
+        <!-- Production Chart -->
+        <div class="section glass">
             <div class="section-header">
-                <h2><i class="fas fa-chart-line"></i> Egg Production</h2>
-                <select class="period-select" onchange="updatePoultryChart()">
+                <h2><i class="fas fa-chart-line"></i> Egg Production Trend</h2>
+                <select class="period-select" id="chartPeriod" onchange="updateChart()">
                     <option value="7">7 Days</option>
                     <option value="30" selected>30 Days</option>
                     <option value="90">90 Days</option>
@@ -101,8 +114,56 @@
             </div>
         </div>
 
+        <!-- Flock Summary -->
+        <div class="section glass">
+            <div class="section-header">
+                <h2><i class="fas fa-dove"></i> Flock Overview</h2>
+                <button class="btn-small" onclick="showAddBirdModal()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            <div class="flock-overview">
+                <div class="flock-stat-card">
+                    <div class="flock-stat-icon layers">
+                        <i class="fas fa-egg"></i>
+                    </div>
+                    <div class="flock-stat-content">
+                        <div class="flock-stat-value" id="totalLayers">0</div>
+                        <div class="flock-stat-label">Layers</div>
+                    </div>
+                </div>
+                <div class="flock-stat-card">
+                    <div class="flock-stat-icon broilers">
+                        <i class="fas fa-drumstick-bite"></i>
+                    </div>
+                    <div class="flock-stat-content">
+                        <div class="flock-stat-value" id="totalBroilers">0</div>
+                        <div class="flock-stat-label">Broilers</div>
+                    </div>
+                </div>
+                <div class="flock-stat-card">
+                    <div class="flock-stat-icon chicks">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <div class="flock-stat-content">
+                        <div class="flock-stat-value" id="totalChicks">0</div>
+                        <div class="flock-stat-label">Chicks</div>
+                    </div>
+                </div>
+                <div class="flock-stat-card">
+                    <div class="flock-stat-icon mortality">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="flock-stat-content">
+                        <div class="flock-stat-value" id="mortalityRate">0%</div>
+                        <div class="flock-stat-label">Mortality</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Recent Activity -->
-        <div class="section">
+        <div class="section glass">
             <div class="section-header">
                 <h2><i class="fas fa-history"></i> Recent Activity</h2>
                 <button class="btn-small" onclick="showAllActivities()">
@@ -113,62 +174,24 @@
                 <div class="empty-state">
                     <i class="fas fa-info-circle"></i>
                     <p>No activities recorded yet</p>
-                    <button class="btn-action" onclick="addEggProduction()">Add First Record</button>
+                    <button class="btn-action" onclick="showAddEggsModal()">Record First Activity</button>
                 </div>
             </div>
         </div>
 
-        <!-- Flock Summary -->
-        <div class="section">
+        <!-- Health Alerts -->
+        <div class="section alert-section glass" id="healthAlerts" style="display: none;">
             <div class="section-header">
-                <h2><i class="fas fa-users"></i> Flock Summary</h2>
+                <h2><i class="fas fa-bell"></i> Health Alerts</h2>
+                <span class="badge" id="alertCount">0</span>
             </div>
-            <div class="flock-grid">
-                <div class="flock-card">
-                    <div class="flock-count" id="layers">0</div>
-                    <div class="flock-label">Layers</div>
-                </div>
-                <div class="flock-card">
-                    <div class="flock-count" id="broilers">0</div>
-                    <div class="flock-label">Broilers</div>
-                </div>
-                <div class="flock-card">
-                    <div class="flock-count" id="chicks">0</div>
-                    <div class="flock-label">Chicks</div>
-                </div>
-                <div class="flock-card">
-                    <div class="flock-count" id="mortality">0%</div>
-                    <div class="flock-label">Mortality</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feed Management -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-seedling"></i> Feed Management</h2>
-                <button class="btn-small" onclick="calculateFeed()">
-                    <i class="fas fa-calculator"></i>
-                </button>
-            </div>
-            <div class="feed-summary">
-                <div class="feed-item">
-                    <div class="feed-label">Daily Feed</div>
-                    <div class="feed-value" id="dailyFeed">0 kg</div>
-                </div>
-                <div class="feed-item">
-                    <div class="feed-label">Feed Cost/Day</div>
-                    <div class="feed-value" id="feedCost">KES 0</div>
-                </div>
-                <div class="feed-item">
-                    <div class="feed-label">Stock Remaining</div>
-                    <div class="feed-value" id="feedStock">0 days</div>
-                </div>
+            <div class="alert-list" id="alertList">
+                <!-- Alerts will be populated here -->
             </div>
         </div>
 
         <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
+        <nav class="bottom-nav glass">
             <a href="index.html" class="nav-btn">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
@@ -193,20 +216,383 @@
     </div>
 
     <!-- Modals -->
+    <!-- Add Eggs Modal -->
     <div id="addEggsModal" class="modal">
         <div class="modal-content">
-            <h3><i class="fas fa-egg"></i> Record Egg Collection</h3>
-            <div class="form-group">
-                <label for="eggCount">Number of Eggs</label>
-                <input type="number" id="eggCount" min="0" placeholder="Enter count">
+            <div class="modal-header">
+                <h3><i class="fas fa-egg"></i> Record Egg Collection</h3>
+                <button class="btn-close" onclick="closeModal('addEggsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="form-group">
-                <label for="brokenEggs">Broken Eggs</label>
-                <input type="number" id="brokenEggs" min="0" value="0" placeholder="Optional">
+            <div class="modal-body">
+                <form id="eggsForm" onsubmit="saveEggProduction(event)">
+                    <div class="form-group">
+                        <label for="eggsDate">Date</label>
+                        <input type="date" id="eggsDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalEggs">Total Eggs Collected</label>
+                            <input type="number" id="totalEggs" min="0" placeholder="Enter total eggs" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="brokenEggs">Broken Eggs</label>
+                            <input type="number" id="brokenEggs" min="0" value="0" placeholder="Broken eggs">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eggSize">Average Egg Size</label>
+                        <select id="eggSize">
+                            <option value="small">Small (&lt;45g)</option>
+                            <option value="medium" selected>Medium (45-55g)</option>
+                            <option value="large">Large (55-65g)</option>
+                            <option value="xlarge">Extra Large (&gt;65g)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eggQuality">Egg Quality</label>
+                        <select id="eggQuality">
+                            <option value="excellent">Excellent</option>
+                            <option value="good" selected>Good</option>
+                            <option value="average">Average</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="collectionTime">Collection Time</label>
+                        <select id="collectionTime">
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                            <option value="both">Multiple Times</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eggsNotes">Notes</label>
+                        <textarea id="eggsNotes" rows="3" placeholder="Any observations, issues with laying, or special notes..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addEggsModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-actions">
-                <button class="btn-secondary" onclick="closeModal('addEggsModal')">Cancel</button>
-                <button class="btn-primary" onclick="saveEggProduction()">Save</button>
+        </div>
+    </div>
+
+    <!-- Add Bird Modal -->
+    <div id="addBirdModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Add New Birds</h3>
+                <button class="btn-close" onclick="closeModal('addBirdModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="birdForm" onsubmit="saveBird(event)">
+                    <div class="form-group">
+                        <label for="birdType">Bird Type</label>
+                        <select id="birdType" required>
+                            <option value="">Select type</option>
+                            <option value="layer">Layer (Egg Production)</option>
+                            <option value="broiler">Broiler (Meat Production)</option>
+                            <option value="dual">Dual Purpose</option>
+                            <option value="chick">Chick</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birdCount">Number of Birds</label>
+                        <input type="number" id="birdCount" min="1" placeholder="Enter number of birds" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birdBreed">Breed</label>
+                        <select id="birdBreed">
+                            <option value="kroiler">Kroiler</option>
+                            <option value="kenbro">Kenbro</option>
+                            <option value="rainbow">Rainbow Rooster</option>
+                            <option value="indigenous">Indigenous</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birdAge">Age (weeks)</label>
+                            <input type="number" id="birdAge" min="0" placeholder="Age in weeks">
+                        </div>
+                        <div class="form-group">
+                            <label for="birdSource">Source</label>
+                            <select id="birdSource">
+                                <option value="hatchery">Hatchery</option>
+                                <option value="market">Market</option>
+                                <option value="own_breeding">Own Breeding</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birdHealth">Health Status</label>
+                        <select id="birdHealth">
+                            <option value="excellent">Excellent</option>
+                            <option value="good" selected>Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birdNotes">Notes</label>
+                        <textarea id="birdNotes" rows="3" placeholder="Any special notes about the birds..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addBirdModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Birds
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Poultry Expense Modal -->
+    <div id="addPoultryExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> Record Poultry Expense</h3>
+                <button class="btn-close" onclick="closeModal('addPoultryExpenseModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="poultryExpenseForm" onsubmit="savePoultryExpense(event)">
+                    <div class="form-group">
+                        <label for="poultryExpenseDate">Date</label>
+                        <input type="date" id="poultryExpenseDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="poultryExpenseCategory">Category</label>
+                        <select id="poultryExpenseCategory" required>
+                            <option value="">Select category</option>
+                            <option value="feed">Feed</option>
+                            <option value="medication">Medication/Vaccines</option>
+                            <option value="litter">Bedding/Litter</option>
+                            <option value="equipment">Equipment</option>
+                            <option value="labor">Labor</option>
+                            <option value="electricity">Electricity (Heating)</option>
+                            <option value="transport">Transport</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="poultryExpenseAmount">Amount (KES)</label>
+                        <input type="number" id="poultryExpenseAmount" step="0.01" min="0" placeholder="Enter amount" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="poultryExpenseDescription">Description</label>
+                        <input type="text" id="poultryExpenseDescription" placeholder="What was this expense for?" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="poultryExpenseQuantity">Quantity</label>
+                            <input type="number" id="poultryExpenseQuantity" min="0" step="0.1" placeholder="e.g., 50 kg">
+                        </div>
+                        <div class="form-group">
+                            <label for="poultryExpenseUnit">Unit</label>
+                            <select id="poultryExpenseUnit">
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="bags">Bags</option>
+                                <option value="liters">Liters</option>
+                                <option value="units">Units</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="poultryExpenseSupplier">Supplier</label>
+                        <input type="text" id="poultryExpenseSupplier" placeholder="Supplier name (optional)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="poultryExpenseNotes">Notes</label>
+                        <textarea id="poultryExpenseNotes" rows="3" placeholder="Additional details..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addPoultryExpenseModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Record Mortality Modal -->
+    <div id="recordMortalityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-skull-crossbones"></i> Record Bird Mortality</h3>
+                <button class="btn-close" onclick="closeModal('recordMortalityModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="mortalityForm" onsubmit="saveMortality(event)">
+                    <div class="form-group">
+                        <label for="mortalityDate">Date</label>
+                        <input type="date" id="mortalityDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityCount">Number of Birds Lost</label>
+                        <input type="number" id="mortalityCount" min="1" placeholder="Enter number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityType">Bird Type</label>
+                        <select id="mortalityType" required>
+                            <option value="layer">Layer</option>
+                            <option value="broiler">Broiler</option>
+                            <option value="chick">Chick</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityCause">Cause of Death</label>
+                        <select id="mortalityCause" required>
+                            <option value="disease">Disease</option>
+                            <option value="predator">Predator</option>
+                            <option value="accident">Accident</option>
+                            <option value="stress">Stress</option>
+                            <option value="heat">Heat Stress</option>
+                            <option value="cold">Cold Stress</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityAge">Average Age (weeks)</label>
+                        <input type="number" id="mortalityAge" min="0" placeholder="Age at death">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityWeight">Average Weight (kg)</label>
+                        <input type="number" id="mortalityWeight" step="0.1" min="0" placeholder="Weight at death">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mortalityNotes">Notes</label>
+                        <textarea id="mortalityNotes" rows="3" placeholder="Symptoms, observations, treatment given..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('recordMortalityModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Record Mortality
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vaccination Record Modal -->
+    <div id="vaccinationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-syringe"></i> Record Vaccination</h3>
+                <button class="btn-close" onclick="closeModal('vaccinationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="vaccinationForm" onsubmit="saveVaccination(event)">
+                    <div class="form-group">
+                        <label for="vaccinationDate">Date</label>
+                        <input type="date" id="vaccinationDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccineType">Vaccine Type</label>
+                        <select id="vaccineType" required>
+                            <option value="newcastle">Newcastle Disease</option>
+                            <option value="gumboro">Gumboro</option>
+                            <option value="fowl_pox">Fowl Pox</option>
+                            <option value="bronchitis">Infectious Bronchitis</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccineBrand">Vaccine Brand</label>
+                        <input type="text" id="vaccineBrand" placeholder="e.g., Nobilis, HatchPak">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birdsVaccinated">Number of Birds</label>
+                            <input type="number" id="birdsVaccinated" min="1" placeholder="Birds vaccinated" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="birdAgeVaccinated">Bird Age (weeks)</label>
+                            <input type="number" id="birdAgeVaccinated" min="0" placeholder="Age at vaccination">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccinationMethod">Method</label>
+                        <select id="vaccinationMethod">
+                            <option value="drinking_water">Drinking Water</option>
+                            <option value="eye_drop">Eye Drop</option>
+                            <option value="injection">Injection</option>
+                            <option value="spray">Spray</option>
+                            <option value="wing_web">Wing Web</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccinationDosage">Dosage</label>
+                        <input type="text" id="vaccinationDosage" placeholder="e.g., 1000 doses">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccinator">Vaccinator</label>
+                        <input type="text" id="vaccinator" placeholder="Name of person who administered">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vaccinationNotes">Notes</label>
+                        <textarea id="vaccinationNotes" rows="3" placeholder="Any observations or reactions..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('vaccinationModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Record Vaccination
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -214,48 +600,75 @@
     <script src="js/app.js"></script>
     <script src="js/charts.js"></script>
     <script>
+        let eggChart = null;
+        let currentBirdId = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             loadPoultryData();
-            updatePoultryChart();
-            updateNavActiveState();
+            initChart();
+            checkHealthAlerts();
+            
+            // Set today's date in forms
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eggsDate').value = today;
+            document.getElementById('poultryExpenseDate').value = today;
+            document.getElementById('mortalityDate').value = today;
+            document.getElementById('vaccinationDate').value = today;
         });
-        
+
         function loadPoultryData() {
             const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
-            const poultry = data.poultry || { eggProduction: [], birds: [] };
+            const poultry = data.poultry || { eggProduction: [], birds: [], expenses: [] };
+            
             updatePoultryUI(poultry);
+            updateActivityList(poultry.eggProduction);
         }
-        
+
         function updatePoultryUI(poultry) {
+            // Calculate today's eggs
             const today = new Date().toISOString().split('T')[0];
             const todayEggs = poultry.eggProduction
                 .filter(p => p.date === today)
-                .reduce((sum, p) => sum + (p.count || 0), 0);
+                .reduce((sum, p) => sum + (parseInt(p.count) || 0), 0);
             
-            const totalEggs = poultry.eggProduction.reduce((sum, p) => sum + (p.count || 0), 0);
+            // Calculate bird statistics
+            const birds = poultry.birds || [];
+            const layers = birds.filter(b => b.type === 'layer').length;
+            const broilers = birds.filter(b => b.type === 'broiler').length;
+            const chicks = birds.filter(b => b.type === 'chick').length;
             
+            // Update displays
             document.getElementById('eggsToday').textContent = todayEggs;
-            document.getElementById('totalBirds').textContent = poultry.birds.length;
+            document.getElementById('totalBirds').textContent = birds.length;
+            document.getElementById('totalLayers').textContent = layers;
+            document.getElementById('totalBroilers').textContent = broilers;
+            document.getElementById('totalChicks').textContent = chicks;
             
-            updatePoultryActivityList(poultry.eggProduction.slice(-3).reverse());
+            // Calculate laying rate
+            const layingRate = layers > 0 ? (todayEggs / layers * 100).toFixed(1) : 0;
+            document.getElementById('layingRate').textContent = `${layingRate}%`;
+            
+            // Update activity list
+            updateActivityList(poultry.eggProduction);
         }
-        
-        function updatePoultryActivityList(activities) {
+
+        function updateActivityList(activities) {
             const container = document.getElementById('activityList');
             if (!activities || activities.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-info-circle"></i>
                         <p>No activities recorded yet</p>
-                        <button class="btn-action" onclick="addEggProduction()">Add First Record</button>
+                        <button class="btn-action" onclick="showAddEggsModal()">Record First Activity</button>
                     </div>
                 `;
                 return;
             }
             
             let html = '';
-            activities.forEach(activity => {
+            activities.slice(-5).reverse().forEach(activity => {
                 const date = new Date(activity.date).toLocaleDateString();
+                const broken = activity.broken ? ` (${activity.broken} broken)` : '';
                 html += `
                     <div class="activity-item">
                         <div class="activity-icon">
@@ -263,56 +676,343 @@
                         </div>
                         <div class="activity-details">
                             <div class="activity-title">Egg Collection</div>
-                            <div class="activity-subtitle">${date}</div>
+                            <div class="activity-subtitle">${date} • ${activity.quality || 'Good'}</div>
                         </div>
-                        <div class="activity-value">${activity.count} eggs</div>
+                        <div class="activity-value">${activity.count}${broken}</div>
                     </div>
                 `;
             });
             container.innerHTML = html;
         }
-        
-        function addEggProduction() {
+
+        function showAddEggsModal() {
             document.getElementById('addEggsModal').style.display = 'flex';
         }
-        
-        function saveEggProduction() {
-            const count = parseInt(document.getElementById('eggCount').value);
-            const broken = parseInt(document.getElementById('brokenEggs').value) || 0;
-            
-            if (!count || count <= 0) {
-                alert('Please enter a valid egg count');
-                return;
-            }
+
+        function showAddBirdModal() {
+            document.getElementById('addBirdModal').style.display = 'flex';
+        }
+
+        function showAddExpenseModal() {
+            document.getElementById('addPoultryExpenseModal').style.display = 'flex';
+        }
+
+        function showRecordMortalityModal() {
+            document.getElementById('recordMortalityModal').style.display = 'flex';
+        }
+
+        function showVaccinationModal() {
+            document.getElementById('vaccinationModal').style.display = 'flex';
+        }
+
+        function saveEggProduction(event) {
+            event.preventDefault();
             
             const record = {
-                date: new Date().toISOString().split('T')[0],
-                count: count,
-                broken: broken
+                date: document.getElementById('eggsDate').value,
+                count: parseInt(document.getElementById('totalEggs').value),
+                broken: parseInt(document.getElementById('brokenEggs').value) || 0,
+                size: document.getElementById('eggSize').value,
+                quality: document.getElementById('eggQuality').value,
+                collectionTime: document.getElementById('collectionTime').value,
+                notes: document.getElementById('eggsNotes').value,
+                timestamp: new Date().toISOString()
             };
             
+            // Save to app
             if (window.app) {
                 window.app.addProduction('poultry', record);
             }
             
             closeModal('addEggsModal');
-            document.getElementById('eggCount').value = '';
-            document.getElementById('brokenEggs').value = '0';
             loadPoultryData();
+            updateChart();
+            
+            showNotification('Egg collection recorded successfully!');
         }
-        
+
+        function saveBird(event) {
+            event.preventDefault();
+            
+            const bird = {
+                type: document.getElementById('birdType').value,
+                count: parseInt(document.getElementById('birdCount').value),
+                breed: document.getElementById('birdBreed').value,
+                age: document.getElementById('birdAge').value || null,
+                source: document.getElementById('birdSource').value,
+                health: document.getElementById('birdHealth').value,
+                notes: document.getElementById('birdNotes').value,
+                addedDate: new Date().toISOString()
+            };
+            
+            // Get existing data
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.poultry) data.poultry = { birds: [] };
+            if (!data.poultry.birds) data.poultry.birds = [];
+            
+            // Add new bird group
+            data.poultry.birds.push(bird);
+            
+            // Save back
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('addBirdModal');
+            loadPoultryData();
+            
+            showNotification(`${bird.count} birds added successfully!`);
+        }
+
+        function savePoultryExpense(event) {
+            event.preventDefault();
+            
+            const expense = {
+                date: document.getElementById('poultryExpenseDate').value,
+                category: document.getElementById('poultryExpenseCategory').value,
+                amount: parseFloat(document.getElementById('poultryExpenseAmount').value),
+                description: document.getElementById('poultryExpenseDescription').value,
+                quantity: document.getElementById('poultryExpenseQuantity').value || null,
+                unit: document.getElementById('poultryExpenseUnit').value,
+                supplier: document.getElementById('poultryExpenseSupplier').value || null,
+                notes: document.getElementById('poultryExpenseNotes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing data
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.poultry) data.poultry = { expenses: [] };
+            if (!data.poultry.expenses) data.poultry.expenses = [];
+            
+            // Add new expense
+            data.poultry.expenses.push(expense);
+            
+            // Save back
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('addPoultryExpenseModal');
+            loadPoultryData();
+            
+            showNotification('Poultry expense recorded successfully!');
+        }
+
+        function saveMortality(event) {
+            event.preventDefault();
+            
+            const mortality = {
+                date: document.getElementById('mortalityDate').value,
+                count: parseInt(document.getElementById('mortalityCount').value),
+                type: document.getElementById('mortalityType').value,
+                cause: document.getElementById('mortalityCause').value,
+                age: document.getElementById('mortalityAge').value || null,
+                weight: document.getElementById('mortalityWeight').value || null,
+                notes: document.getElementById('mortalityNotes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to local storage
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.poultry) data.poultry = { mortality: [] };
+            if (!data.poultry.mortality) data.poultry.mortality = [];
+            
+            data.poultry.mortality.push(mortality);
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('recordMortalityModal');
+            loadPoultryData();
+            
+            showNotification('Mortality recorded successfully!');
+        }
+
+        function saveVaccination(event) {
+            event.preventDefault();
+            
+            const vaccination = {
+                date: document.getElementById('vaccinationDate').value,
+                type: document.getElementById('vaccineType').value,
+                brand: document.getElementById('vaccineBrand').value || null,
+                count: parseInt(document.getElementById('birdsVaccinated').value),
+                age: document.getElementById('birdAgeVaccinated').value || null,
+                method: document.getElementById('vaccinationMethod').value,
+                dosage: document.getElementById('vaccinationDosage').value || null,
+                vaccinator: document.getElementById('vaccinator').value || null,
+                notes: document.getElementById('vaccinationNotes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to local storage
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.poultry) data.poultry = { vaccinations: [] };
+            if (!data.poultry.vaccinations) data.poultry.vaccinations = [];
+            
+            data.poultry.vaccinations.push(vaccination);
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('vaccinationModal');
+            
+            showNotification('Vaccination recorded successfully!');
+        }
+
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
-        
-        function updateNavActiveState() {
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('href') === 'poultry.html') {
-                    btn.classList.add('active');
+
+        function initChart() {
+            const ctx = document.getElementById('eggChart').getContext('2d');
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const production = data.poultry?.eggProduction || [];
+            
+            // Get last 30 days data
+            const last30Days = getLastNDates(30);
+            const eggData = last30Days.map(date => {
+                const dayProduction = production
+                    .filter(p => p.date === date)
+                    .reduce((sum, p) => sum + (parseInt(p.count) || 0), 0);
+                return dayProduction;
+            });
+            
+            eggChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: last30Days.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                    datasets: [{
+                        label: 'Eggs Collected',
+                        data: eggData,
+                        backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                        borderColor: '#ff9800',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 9 : 11
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Eggs',
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 9 : 11
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 10,
+                            left: 10,
+                            right: 10
+                        }
+                    }
                 }
             });
         }
+
+        function updateChart() {
+            if (!eggChart) return;
+            
+            const period = parseInt(document.getElementById('chartPeriod').value);
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const production = data.poultry?.eggProduction || [];
+            
+            const lastNDays = getLastNDates(period);
+            const eggData = lastNDays.map(date => {
+                const dayProduction = production
+                    .filter(p => p.date === date)
+                    .reduce((sum, p) => sum + (parseInt(p.count) || 0), 0);
+                return dayProduction;
+            });
+            
+            eggChart.data.labels = lastNDays.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            eggChart.data.datasets[0].data = eggData;
+            eggChart.update();
+        }
+
+        function getLastNDates(n) {
+            const dates = [];
+            for (let i = n - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        function checkHealthAlerts() {
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const mortality = data.poultry?.mortality || [];
+            
+            // Check for recent mortality
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            const recentMortality = mortality.filter(m => m.date === today || m.date === yesterdayStr);
+            
+            if (recentMortality.length > 0) {
+                document.getElementById('healthAlerts').style.display = 'block';
+                document.getElementById('alertCount').textContent = recentMortality.length;
+                
+                let alertHtml = '';
+                recentMortality.forEach(m => {
+                    alertHtml += `
+                        <div class="alert-item warning">
+                            <i class="fas fa-skull-crossbones"></i>
+                            <div>
+                                <strong>Mortality Alert: ${m.count} birds</strong>
+                                <p>${m.cause || 'Unknown cause'} on ${new Date(m.date).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('alertList').innerHTML = alertHtml;
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+            
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Resize chart on window resize
+        window.addEventListener('resize', function() {
+            if (eggChart) eggChart.resize();
+        });
     </script>
 </body>
 </html>
