@@ -3,149 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AgriFlow - Smart Farm Management</title>
+    <title>Dairy Farm - AgriFlow</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <header class="main-header">
             <div class="logo-container">
-                <i class="fas fa-tractor logo-icon"></i>
+                <button class="back-btn" onclick="navigateTo('index.html')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 <div>
-                    <h1>AgriFlow</h1>
-                    <p class="tagline">Smart Farm Management</p>
+                    <h1>Dairy Farm</h1>
+                    <p class="tagline" id="farmName">My Farm</p>
                 </div>
             </div>
-            <button class="menu-btn" onclick="navigateTo('settings.html')">
-                <i class="fas fa-cog"></i>
-            </button>
-        </header>
-
-        <div class="profitability-banner" id="profitabilityBanner">
-            <i class="fas fa-chart-line"></i>
-            <span>Add production data to see profitability analysis</span>
-        </div>
-
-        <main class="dashboard-grid">
-            <!-- Dairy Farm Card -->
-            <div class="farm-card dairy" onclick="navigateTo('dairy.html')">
-                <div class="farm-card-header">
-                    <div class="farm-icon">
-                        <i class="fas fa-cow"></i>
-                    </div>
-                    <div class="farm-info">
-                        <h2>Dairy Farm</h2>
-                        <div class="farm-stats-compact">
-                            <span class="stat-item"><i class="fas fa-wine-bottle"></i> <span id="dairyMilk">0 L</span></span>
-                            <span class="stat-item"><i class="fas fa-money-bill-wave"></i> <span id="dairyProfit">KES 0</span></span>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="farm-status">
-                    <span class="status-indicator inactive"></span>
-                    <span>Tap to manage dairy farm</span>
-                </div>
-            </div>
-
-            <!-- Poultry Farm Card -->
-            <div class="farm-card poultry" onclick="navigateTo('poultry.html')">
-                <div class="farm-card-header">
-                    <div class="farm-icon">
-                        <i class="fas fa-egg"></i>
-                    </div>
-                    <div class="farm-info">
-                        <h2>Poultry Farm</h2>
-                        <div class="farm-stats-compact">
-                            <span class="stat-item"><i class="fas fa-egg"></i> <span id="poultryEggs">0 Eggs</span></span>
-                            <span class="stat-item"><i class="fas fa-money-bill-wave"></i> <span id="poultryProfit">KES 0</span></span>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="farm-status">
-                    <span class="status-indicator inactive"></span>
-                    <span>Tap to manage poultry farm</span>
-                </div>
-            </div>
-
-            <!-- Action Cards -->
-            <div class="action-card" onclick="navigateTo('master-report.html')">
-                <div class="action-icon">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Master Report</h3>
-                    <p>Generate comprehensive farm reports</p>
-                </div>
-                <button class="btn-action">View</button>
-            </div>
-
-            <div class="action-card" onclick="backupData()">
-                <div class="action-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Backup Data</h3>
-                    <p>Last backup: <span id="lastBackup">Never</span></p>
-                </div>
-                <button class="btn-action">Backup</button>
-            </div>
-
-            <div class="action-card" onclick="restoreData()">
-                <div class="action-icon">
-                    <i class="fas fa-cloud-download-alt"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Restore Data</h3>
-                    <p>Recover from cloud backup</p>
-                </div>
-                <button class="btn-action">Restore</button>
-            </div>
-        </main>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions-section">
-            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-            <div class="quick-action-buttons">
-                <button class="quick-action-btn" onclick="addProduction('dairy')">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Milk</span>
-                </button>
-                <button class="quick-action-btn" onclick="addProduction('poultry')">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Eggs</span>
-                </button>
-                <button class="quick-action-btn" onclick="exportData()">
-                    <i class="fas fa-download"></i>
-                    <span>Export Data</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Insights -->
-        <div class="insights-section">
-            <div class="insights-header">
-                <h3><i class="fas fa-lightbulb"></i> Smart Insights</h3>
-                <button class="btn-small" onclick="refreshInsights()">
+            <div class="header-actions">
+                <button class="btn-icon" onclick="syncData()" title="Sync Data">
                     <i class="fas fa-sync-alt"></i>
                 </button>
+                <button class="btn-icon" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
             </div>
-            <div class="insights-content" id="dailyInsight">
-                <p>Add your first production record to get personalized insights</p>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-wine-bottle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Today's Milk</h3>
+                    <div class="stat-value" id="milkToday">0 L</div>
+                    <div class="stat-change" id="milkChange">+0%</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Monthly Profit</h3>
+                    <div class="stat-value" id="monthlyProfit">KES 0</div>
+                    <div class="stat-change" id="profitChange">vs last month</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-cow"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Animals</h3>
+                    <div class="stat-value" id="totalAnimals">0</div>
+                    <div class="stat-change" id="animalChange">healthy</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Avg Yield</h3>
+                    <div class="stat-value" id="avgYield">0 L</div>
+                    <div class="stat-change" id="yieldChange">per cow</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+            <button class="action-btn primary" onclick="showAddMilkModal()">
+                <i class="fas fa-wine-bottle"></i>
+                <span>Add Milk</span>
+            </button>
+            <button class="action-btn secondary" onclick="showAddAnimalModal()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Animal</span>
+            </button>
+            <button class="action-btn secondary" onclick="showAddExpenseModal()">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Add Expense</span>
+            </button>
+            <button class="action-btn secondary" onclick="showHerdView()">
+                <i class="fas fa-list"></i>
+                <span>View Herd</span>
+            </button>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Production Trend</h2>
+                <select class="period-select" id="chartPeriod" onchange="updateChart()">
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>30 Days</option>
+                    <option value="90">90 Days</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <canvas id="milkChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Herd Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Herd Overview</h2>
+                <button class="btn-small" onclick="showAddAnimalModal()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            <div class="herd-overview">
+                <div class="herd-stat-card">
+                    <div class="herd-stat-icon milking">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="herd-stat-content">
+                        <div class="herd-stat-value" id="milkingCows">0</div>
+                        <div class="herd-stat-label">Milking</div>
+                    </div>
+                </div>
+                <div class="herd-stat-card">
+                    <div class="herd-stat-icon dry">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div class="herd-stat-content">
+                        <div class="herd-stat-value" id="dryCows">0</div>
+                        <div class="herd-stat-label">Dry</div>
+                    </div>
+                </div>
+                <div class="herd-stat-card">
+                    <div class="herd-stat-icon calf">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <div class="herd-stat-content">
+                        <div class="herd-stat-value" id="calves">0</div>
+                        <div class="herd-stat-label">Calves</div>
+                    </div>
+                </div>
+                <div class="herd-stat-card">
+                    <div class="herd-stat-icon pregnant">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="herd-stat-content">
+                        <div class="herd-stat-value" id="pregnantCows">0</div>
+                        <div class="herd-stat-label">Pregnant</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                <button class="btn-small" onclick="showAllActivities()">
+                    View All
+                </button>
+            </div>
+            <div class="activity-list" id="activityList">
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No activities recorded yet</p>
+                    <button class="btn-action" onclick="showAddMilkModal()">Record First Activity</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Alerts -->
+        <div class="section alert-section" id="healthAlerts" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-bell"></i> Health Alerts</h2>
+                <span class="badge" id="alertCount">0</span>
+            </div>
+            <div class="alert-list" id="alertList">
+                <!-- Alerts will be populated here -->
             </div>
         </div>
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
-            <a href="index.html" class="nav-btn active">
+            <a href="index.html" class="nav-btn">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-            <a href="dairy.html" class="nav-btn">
+            <a href="dairy.html" class="nav-btn active">
                 <i class="fas fa-cow"></i>
                 <span>Dairy</span>
             </a>
@@ -164,127 +215,812 @@
         </nav>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <!-- Modals -->
+    <!-- Add Milk Production Modal -->
+    <div id="addMilkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-wine-bottle"></i> Record Milk Production</h3>
+                <button class="btn-close" onclick="closeModal('addMilkModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="milkForm" onsubmit="saveMilkProduction(event)">
+                    <div class="form-group">
+                        <label for="milkDate">Date</label>
+                        <input type="date" id="milkDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="milkQuantity">Total Milk (Liters)</label>
+                        <input type="number" id="milkQuantity" step="0.1" min="0" placeholder="Enter total liters" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="milkSession">Milking Session</label>
+                        <select id="milkSession" required>
+                            <option value="">Select session</option>
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                            <option value="both">Both Sessions</option>
+                            <option value="single">Single Session</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="milkQuality">Milk Quality</label>
+                        <select id="milkQuality">
+                            <option value="excellent">Excellent</option>
+                            <option value="good" selected>Good</option>
+                            <option value="average">Average</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fatContent">Fat Content (%)</label>
+                            <input type="number" id="fatContent" step="0.1" min="0" max="10" placeholder="3.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="proteinContent">Protein Content (%)</label>
+                            <input type="number" id="proteinContent" step="0.1" min="0" max="10" placeholder="3.2">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="milkNotes">Notes</label>
+                        <textarea id="milkNotes" rows="3" placeholder="Any observations, issues, or special notes..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addMilkModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Animal Modal -->
+    <div id="addAnimalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Add New Animal</h3>
+                <button class="btn-close" onclick="closeModal('addAnimalModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="animalForm" onsubmit="saveAnimal(event)">
+                    <div class="form-group">
+                        <label for="animalName">Animal Name/ID</label>
+                        <input type="text" id="animalName" placeholder="e.g., Daisy-001" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="animalTag">Tag Number</label>
+                            <input type="text" id="animalTag" placeholder="e.g., T-001">
+                        </div>
+                        <div class="form-group">
+                            <label for="animalBreed">Breed</label>
+                            <select id="animalBreed">
+                                <option value="friesian">Friesian</option>
+                                <option value="ayrshire">Ayrshire</option>
+                                <option value="guernsey">Guernsey</option>
+                                <option value="jersey">Jersey</option>
+                                <option value="local">Local</option>
+                                <option value="cross">Cross-breed</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="animalCategory">Category</label>
+                        <select id="animalCategory" required>
+                            <option value="">Select category</option>
+                            <option value="milking">Milking Cow</option>
+                            <option value="dry">Dry Cow</option>
+                            <option value="heifer">Heifer</option>
+                            <option value="calf">Calf</option>
+                            <option value="bull">Bull</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="animalAge">Age (months)</label>
+                            <input type="number" id="animalAge" min="0" placeholder="e.g., 24">
+                        </div>
+                        <div class="form-group">
+                            <label for="animalWeight">Weight (kg)</label>
+                            <input type="number" id="animalWeight" step="0.1" min="0" placeholder="e.g., 450">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="animalStatus">Health Status</label>
+                        <select id="animalStatus">
+                            <option value="excellent">Excellent</option>
+                            <option value="good" selected>Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="animalNotes">Notes</label>
+                        <textarea id="animalNotes" rows="3" placeholder="Any special notes about the animal..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addAnimalModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Animal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> Record Expense</h3>
+                <button class="btn-close" onclick="closeModal('addExpenseModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="expenseForm" onsubmit="saveExpense(event)">
+                    <div class="form-group">
+                        <label for="expenseDate">Date</label>
+                        <input type="date" id="expenseDate" value="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" required>
+                            <option value="">Select category</option>
+                            <option value="feed">Feed</option>
+                            <option value="veterinary">Veterinary</option>
+                            <option value="labor">Labor</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="equipment">Equipment</option>
+                            <option value="medication">Medication</option>
+                            <option value="transport">Transport</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount (KES)</label>
+                        <input type="number" id="expenseAmount" step="0.01" min="0" placeholder="Enter amount" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expenseDescription">Description</label>
+                        <input type="text" id="expenseDescription" placeholder="What was this expense for?" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expensePaymentMethod">Payment Method</label>
+                        <select id="expensePaymentMethod">
+                            <option value="cash">Cash</option>
+                            <option value="mpesa">M-Pesa</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="credit">Credit</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expenseReceipt">Receipt Number (Optional)</label>
+                        <input type="text" id="expenseReceipt" placeholder="Receipt number if available">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expenseNotes">Notes</label>
+                        <textarea id="expenseNotes" rows="3" placeholder="Additional details..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('addExpenseModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Herd View Modal -->
+    <div id="herdViewModal" class="modal">
+        <div class="modal-content full-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> Herd Management</h3>
+                <button class="btn-close" onclick="closeModal('herdViewModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="herd-management">
+                    <div class="herd-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="herdSearch" placeholder="Search animals..." onkeyup="searchAnimals()">
+                        </div>
+                        <button class="btn-primary" onclick="showAddAnimalModal()">
+                            <i class="fas fa-plus"></i> Add Animal
+                        </button>
+                    </div>
+                    
+                    <div class="herd-list" id="herdList">
+                        <!-- Animals will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animal Detail Modal -->
+    <div id="animalDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="animalDetailName">Animal Details</h3>
+                <button class="btn-close" onclick="closeModal('animalDetailModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="animal-detail" id="animalDetailContent">
+                    <!-- Animal details will be populated here -->
+                </div>
+                <div class="animal-actions">
+                    <button class="btn-secondary" onclick="editAnimal()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-danger" onclick="deleteAnimal()">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/app.js"></script>
-    <script src="js/firebase.js"></script>
+    <script src="js/charts.js"></script>
     <script>
+        let milkChart = null;
+        let currentAnimalId = null;
+
         document.addEventListener('DOMContentLoaded', function() {
-            updateDate();
-            loadFarmData();
-            
-            // Initialize PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('js/service-worker.js')
-                    .then(() => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker failed:', err));
-            }
-            
-            // Set current date
-            const dateElement = document.getElementById('currentDate');
-            if (dateElement) {
-                dateElement.textContent = new Date().toLocaleDateString();
-            }
-            
-            // Update navigation active state
+            loadDairyData();
+            initChart();
             updateNavActiveState();
+            checkHealthAlerts();
         });
-        
+
+        function loadDairyData() {
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const dairy = data.dairy || { milkProduction: [], animals: [], expenses: [] };
+            
+            updateDairyUI(dairy);
+            updateActivityList(dairy.milkProduction);
+            updateHerdList(dairy.animals);
+        }
+
+        function updateDairyUI(dairy) {
+            // Calculate today's milk
+            const today = new Date().toISOString().split('T')[0];
+            const todayMilk = dairy.milkProduction
+                .filter(p => p.date === today)
+                .reduce((sum, p) => sum + (parseFloat(p.liters) || 0), 0);
+            
+            // Calculate total animals by category
+            const animals = dairy.animals || [];
+            const milkingCows = animals.filter(a => a.category === 'milking').length;
+            const dryCows = animals.filter(a => a.category === 'dry').length;
+            const calves = animals.filter(a => a.category === 'calf').length;
+            const pregnantCows = animals.filter(a => a.pregnant === true).length;
+            
+            // Update displays
+            document.getElementById('milkToday').textContent = todayMilk.toFixed(1) + ' L';
+            document.getElementById('totalAnimals').textContent = animals.length;
+            document.getElementById('milkingCows').textContent = milkingCows;
+            document.getElementById('dryCows').textContent = dryCows;
+            document.getElementById('calves').textContent = calves;
+            document.getElementById('pregnantCows').textContent = pregnantCows;
+            
+            // Calculate average yield
+            const avgYield = animals.length > 0 ? todayMilk / animals.length : 0;
+            document.getElementById('avgYield').textContent = avgYield.toFixed(1) + ' L';
+            
+            // Update activity list
+            updateActivityList(dairy.milkProduction);
+        }
+
+        function updateActivityList(activities) {
+            const container = document.getElementById('activityList');
+            if (!activities || activities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No activities recorded yet</p>
+                        <button class="btn-action" onclick="showAddMilkModal()">Record First Activity</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            activities.slice(-5).reverse().forEach(activity => {
+                const date = new Date(activity.date).toLocaleDateString();
+                const time = activity.time || '';
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-wine-bottle"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Milk Production</div>
+                            <div class="activity-subtitle">${date} ${time} • ${activity.quality || 'Good'}</div>
+                        </div>
+                        <div class="activity-value">${activity.liters} L</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateHerdList(animals) {
+            const container = document.getElementById('herdList');
+            if (!animals || animals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-cow"></i>
+                        <p>No animals in herd</p>
+                        <button class="btn-action" onclick="showAddAnimalModal()">Add First Animal</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            animals.forEach((animal, index) => {
+                const statusColors = {
+                    'excellent': '#4caf50',
+                    'good': '#8bc34a',
+                    'fair': '#ff9800',
+                    'poor': '#f44336',
+                    'critical': '#d32f2f'
+                };
+                
+                const categoryIcons = {
+                    'milking': 'fa-tint',
+                    'dry': 'fa-ban',
+                    'heifer': 'fa-female',
+                    'calf': 'fa-baby',
+                    'bull': 'fa-mars'
+                };
+                
+                html += `
+                    <div class="herd-item" onclick="showAnimalDetail(${index})">
+                        <div class="herd-item-icon" style="background: ${statusColors[animal.status] || '#9e9e9e'}20; color: ${statusColors[animal.status] || '#9e9e9e'}">
+                            <i class="fas ${categoryIcons[animal.category] || 'fa-cow'}"></i>
+                        </div>
+                        <div class="herd-item-info">
+                            <div class="herd-item-name">${animal.name || 'Unnamed'}</div>
+                            <div class="herd-item-details">
+                                <span class="tag">${animal.category || 'Unknown'}</span>
+                                <span class="tag">${animal.breed || 'Unknown breed'}</span>
+                                <span class="tag">${animal.age || '?'} months</span>
+                            </div>
+                        </div>
+                        <div class="herd-item-actions">
+                            <button class="btn-icon-small" onclick="event.stopPropagation(); editAnimal(${index})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function showAddMilkModal() {
+            document.getElementById('milkDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addMilkModal').style.display = 'flex';
+        }
+
+        function showAddAnimalModal() {
+            document.getElementById('addAnimalModal').style.display = 'flex';
+        }
+
+        function showAddExpenseModal() {
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addExpenseModal').style.display = 'flex';
+        }
+
+        function showHerdView() {
+            document.getElementById('herdViewModal').style.display = 'flex';
+            loadDairyData(); // Refresh herd list
+        }
+
+        function showAnimalDetail(index) {
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const animals = data.dairy?.animals || [];
+            const animal = animals[index];
+            
+            if (!animal) return;
+            
+            currentAnimalId = index;
+            
+            document.getElementById('animalDetailName').textContent = animal.name || 'Unnamed Animal';
+            
+            const details = `
+                <div class="animal-detail-section">
+                    <h4><i class="fas fa-id-card"></i> Basic Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Tag Number:</label>
+                            <span>${animal.tag || 'Not set'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Breed:</label>
+                            <span>${animal.breed || 'Unknown'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Category:</label>
+                            <span>${animal.category || 'Unknown'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Age:</label>
+                            <span>${animal.age || '?'} months</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Weight:</label>
+                            <span>${animal.weight || '?'} kg</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="animal-detail-section">
+                    <h4><i class="fas fa-heartbeat"></i> Health Status</h4>
+                    <div class="health-status ${animal.status || 'good'}">
+                        <span class="status-indicator"></span>
+                        <span>${animal.status || 'Good'}</span>
+                    </div>
+                    ${animal.notes ? `<p class="animal-notes">${animal.notes}</p>` : ''}
+                </div>
+                
+                <div class="animal-detail-section">
+                    <h4><i class="fas fa-history"></i> Production History</h4>
+                    <p class="empty-message">Production tracking coming soon</p>
+                </div>
+            `;
+            
+            document.getElementById('animalDetailContent').innerHTML = details;
+            document.getElementById('animalDetailModal').style.display = 'flex';
+        }
+
+        function saveMilkProduction(event) {
+            event.preventDefault();
+            
+            const record = {
+                date: document.getElementById('milkDate').value,
+                liters: parseFloat(document.getElementById('milkQuantity').value),
+                session: document.getElementById('milkSession').value,
+                quality: document.getElementById('milkQuality').value,
+                fatContent: document.getElementById('fatContent').value || null,
+                proteinContent: document.getElementById('proteinContent').value || null,
+                notes: document.getElementById('milkNotes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to app
+            if (window.app) {
+                window.app.addProduction('dairy', record);
+            }
+            
+            closeModal('addMilkModal');
+            loadDairyData();
+            updateChart();
+            
+            showNotification('Milk production recorded successfully!');
+        }
+
+        function saveAnimal(event) {
+            event.preventDefault();
+            
+            const animal = {
+                name: document.getElementById('animalName').value,
+                tag: document.getElementById('animalTag').value,
+                breed: document.getElementById('animalBreed').value,
+                category: document.getElementById('animalCategory').value,
+                age: document.getElementById('animalAge').value || null,
+                weight: document.getElementById('animalWeight').value || null,
+                status: document.getElementById('animalStatus').value,
+                notes: document.getElementById('animalNotes').value,
+                addedDate: new Date().toISOString()
+            };
+            
+            // Get existing data
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.dairy) data.dairy = { animals: [] };
+            if (!data.dairy.animals) data.dairy.animals = [];
+            
+            // Add new animal
+            data.dairy.animals.push(animal);
+            
+            // Save back
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('addAnimalModal');
+            loadDairyData();
+            
+            showNotification('Animal added successfully!');
+        }
+
+        function saveExpense(event) {
+            event.preventDefault();
+            
+            const expense = {
+                date: document.getElementById('expenseDate').value,
+                category: document.getElementById('expenseCategory').value,
+                amount: parseFloat(document.getElementById('expenseAmount').value),
+                description: document.getElementById('expenseDescription').value,
+                paymentMethod: document.getElementById('expensePaymentMethod').value,
+                receipt: document.getElementById('expenseReceipt').value || null,
+                notes: document.getElementById('expenseNotes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing data
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            if (!data.dairy) data.dairy = { expenses: [] };
+            if (!data.dairy.expenses) data.dairy.expenses = [];
+            
+            // Add new expense
+            data.dairy.expenses.push(expense);
+            
+            // Save back
+            localStorage.setItem('agriflowData', JSON.stringify(data));
+            
+            closeModal('addExpenseModal');
+            loadDairyData();
+            
+            showNotification('Expense recorded successfully!');
+        }
+
+        function editAnimal(index = null) {
+            const idx = index !== null ? index : currentAnimalId;
+            if (idx === null) return;
+            
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const animals = data.dairy?.animals || [];
+            const animal = animals[idx];
+            
+            if (!animal) return;
+            
+            // Populate form with animal data
+            document.getElementById('animalName').value = animal.name || '';
+            document.getElementById('animalTag').value = animal.tag || '';
+            document.getElementById('animalBreed').value = animal.breed || '';
+            document.getElementById('animalCategory').value = animal.category || '';
+            document.getElementById('animalAge').value = animal.age || '';
+            document.getElementById('animalWeight').value = animal.weight || '';
+            document.getElementById('animalStatus').value = animal.status || 'good';
+            document.getElementById('animalNotes').value = animal.notes || '';
+            
+            closeModal('animalDetailModal');
+            showAddAnimalModal();
+            
+            // Set up save to update instead of add
+            const form = document.getElementById('animalForm');
+            form.onsubmit = function(event) {
+                event.preventDefault();
+                
+                // Update animal
+                animals[idx] = {
+                    ...animal,
+                    name: document.getElementById('animalName').value,
+                    tag: document.getElementById('animalTag').value,
+                    breed: document.getElementById('animalBreed').value,
+                    category: document.getElementById('animalCategory').value,
+                    age: document.getElementById('animalAge').value || null,
+                    weight: document.getElementById('animalWeight').value || null,
+                    status: document.getElementById('animalStatus').value,
+                    notes: document.getElementById('animalNotes').value
+                };
+                
+                data.dairy.animals = animals;
+                localStorage.setItem('agriflowData', JSON.stringify(data));
+                
+                closeModal('addAnimalModal');
+                loadDairyData();
+                
+                showNotification('Animal updated successfully!');
+            };
+        }
+
+        function deleteAnimal() {
+            if (currentAnimalId === null) return;
+            
+            if (confirm('Are you sure you want to delete this animal? This action cannot be undone.')) {
+                const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+                const animals = data.dairy?.animals || [];
+                
+                animals.splice(currentAnimalId, 1);
+                data.dairy.animals = animals;
+                
+                localStorage.setItem('agriflowData', JSON.stringify(data));
+                
+                closeModal('animalDetailModal');
+                loadDairyData();
+                
+                showNotification('Animal deleted successfully!');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('milkChart').getContext('2d');
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const production = data.dairy?.milkProduction || [];
+            
+            // Get last 30 days data
+            const last30Days = getLastNDates(30);
+            const milkData = last30Days.map(date => {
+                const dayProduction = production
+                    .filter(p => p.date === date)
+                    .reduce((sum, p) => sum + (parseFloat(p.liters) || 0), 0);
+                return dayProduction;
+            });
+            
+            milkChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last30Days.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                    datasets: [{
+                        label: 'Milk Production (L)',
+                        data: milkData,
+                        borderColor: '#2196f3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Liters'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (!milkChart) return;
+            
+            const period = parseInt(document.getElementById('chartPeriod').value);
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const production = data.dairy?.milkProduction || [];
+            
+            const lastNDays = getLastNDates(period);
+            const milkData = lastNDays.map(date => {
+                const dayProduction = production
+                    .filter(p => p.date === date)
+                    .reduce((sum, p) => sum + (parseFloat(p.liters) || 0), 0);
+                return dayProduction;
+            });
+            
+            milkChart.data.labels = lastNDays.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            milkChart.data.datasets[0].data = milkData;
+            milkChart.update();
+        }
+
+        function getLastNDates(n) {
+            const dates = [];
+            for (let i = n - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        function checkHealthAlerts() {
+            const data = JSON.parse(localStorage.getItem('agriflowData')) || {};
+            const animals = data.dairy?.animals || [];
+            
+            const criticalAnimals = animals.filter(a => a.status === 'critical');
+            const poorAnimals = animals.filter(a => a.status === 'poor');
+            
+            if (criticalAnimals.length > 0 || poorAnimals.length > 0) {
+                document.getElementById('healthAlerts').style.display = 'block';
+                document.getElementById('alertCount').textContent = criticalAnimals.length + poorAnimals.length;
+                
+                let alertHtml = '';
+                criticalAnimals.forEach(animal => {
+                    alertHtml += `
+                        <div class="alert-item critical">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Critical: ${animal.name || 'Unnamed'}</strong>
+                                <p>Requires immediate veterinary attention</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                poorAnimals.forEach(animal => {
+                    alertHtml += `
+                        <div class="alert-item warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>
+                                <strong>Poor Health: ${animal.name || 'Unnamed'}</strong>
+                                <p>Monitor closely</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('alertList').innerHTML = alertHtml;
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+            
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
         function updateNavActiveState() {
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.getAttribute('href') === currentPage) {
+                if (btn.getAttribute('href') === 'dairy.html') {
                     btn.classList.add('active');
                 }
             });
         }
-        
-        function refreshInsights() {
-            const insight = document.getElementById('dailyInsight');
-            insight.innerHTML = '<p>Refreshing insights...</p>';
-            setTimeout(() => {
-                insight.innerHTML = '<p>✓ Record daily production for better insights<br>✓ Check animal health regularly<br>✓ Monitor feed consumption</p>';
-            }, 1000);
-        }
     </script>
-        <!-- Add this to the script section in index.html -->
-    <script>
-        let deferredPrompt;
-        const installBanner = document.getElementById('installBanner');
-        const installBtn = document.getElementById('installBtn');
-        const dismissBtn = document.getElementById('dismissBtn');
-    
-        // Check if already installed
-        function isPWAInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone ||
-                   document.referrer.includes('android-app://');
-        }
-    
-        // Show install banner
-        function showInstallBanner() {
-            if (!isPWAInstalled() && !localStorage.getItem('installBannerDismissed')) {
-                setTimeout(() => {
-                    installBanner.style.display = 'flex';
-                }, 3000); // Show after 3 seconds
-            }
-        }
-    
-        // Handle install prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallBanner();
-        });
-    
-        // Install button click
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('PWA installed');
-                    }
-                    deferredPrompt = null;
-                }
-                installBanner.style.display = 'none';
-            });
-        }
-    
-        // Dismiss button
-        if (dismissBtn) {
-            dismissBtn.addEventListener('click', () => {
-                installBanner.style.display = 'none';
-                localStorage.setItem('installBannerDismissed', 'true');
-            });
-        }
-    
-        // Check on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            if (isPWAInstalled()) {
-                console.log('App is running as PWA');
-            } else {
-                showInstallBanner();
-            }
-        });
-    </script>
-        <!-- Add this section before closing body tag in index.html -->
-    <div class="pwa-install-banner" id="installBanner">
-        <div class="install-banner-content">
-            <i class="fas fa-mobile-alt"></i>
-            <div>
-                <h3>Install AgriFlow</h3>
-                <p>Get quick access to your farm management</p>
-            </div>
-        </div>
-        <div class="install-banner-actions">
-            <button class="btn-install" id="installBtn">Install</button>
-            <button class="btn-dismiss" id="dismissBtn">Later</button>
-        </div>
-    </div>
-
 </body>
 </html>
-
