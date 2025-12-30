@@ -13,7 +13,7 @@
         <!-- Header -->
         <header class="main-header">
             <div class="logo-container">
-                <button class="back-btn" onclick="navigateTo('index.html')">
+                <button class="back-btn" onclick="window.history.back()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <div>
@@ -23,223 +23,193 @@
             </div>
         </header>
 
-        <!-- Profile Section -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-user-circle"></i> Profile</h2>
-            </div>
-            <div class="form-group">
-                <label for="farmName">Farm Name</label>
-                <input type="text" id="farmName" placeholder="Enter farm name">
-            </div>
-            <div class="form-group">
-                <label for="managerName">Manager's Name</label>
-                <input type="text" id="managerName" placeholder="Enter manager name">
-            </div>
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" placeholder="Enter farm location">
-            </div>
-            <div class="form-group">
-                <label for="currency">Currency</label>
-                <select id="currency">
-                    <option value="KES">Kenyan Shilling (KES)</option>
-                    <option value="USD">US Dollar (USD)</option>
-                    <option value="EUR">Euro (EUR)</option>
-                    <option value="GBP">British Pound (GBP)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Appearance -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-palette"></i> Appearance</h2>
-            </div>
-            
-            <!-- Modern Theme Toggle -->
-            <div class="theme-toggle-container">
-                <div class="theme-toggle-info">
-                    <h3>Theme</h3>
-                    <p>Choose your preferred theme</p>
-                </div>
-                <div class="theme-toggle">
-                    <div class="theme-option" onclick="setTheme('light')">
-                        <div class="theme-icon">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                        <span>Light</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('dark')">
-                        <div class="theme-icon">
-                            <i class="fas fa-moon"></i>
-                        </div>
-                        <span>Dark</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('auto')">
-                        <div class="theme-icon">
-                            <i class="fas fa-adjust"></i>
-                        </div>
-                        <span>Auto</span>
-                    </div>
+        <div class="settings-container">
+            <!-- Appearance Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-palette"></i> Appearance</h2>
                 </div>
                 
-                <!-- Modern Toggle Switch -->
-                <div class="toggle-switch-container">
-                    <div class="toggle-info">
+                <div class="setting-item">
+                    <div class="setting-info">
                         <h3>Dark Mode</h3>
-                        <p>Toggle between light and dark themes</p>
+                        <p>Toggle between light and dark theme</p>
                     </div>
-                    <label class="modern-switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="modern-slider">
-                            <span class="slider-icon">
-                                <i class="fas fa-sun"></i>
-                                <i class="fas fa-moon"></i>
+                    <div class="setting-control">
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="toggle-slider">
+                                <span class="toggle-icon sun"><i class="fas fa-sun"></i></span>
+                                <span class="toggle-icon moon"><i class="fas fa-moon"></i></span>
                             </span>
-                        </span>
-                    </label>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Notifications -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-bell"></i> Notifications</h2>
-            </div>
-            
-            <div class="toggle-item">
-                <div class="toggle-info">
-                    <h3>Daily Reminders</h3>
-                    <p>Get reminded to record production</p>
+            <!-- Farm Information -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-farm"></i> Farm Information</h2>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" id="dailyReminders" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="toggle-item">
-                <div class="toggle-info">
-                    <h3>Health Alerts</h3>
-                    <p>Get alerts for animal health issues</p>
+                
+                <div class="form-group">
+                    <label for="farmName">Farm Name</label>
+                    <input type="text" id="farmName" placeholder="Enter your farm name">
                 </div>
-                <label class="switch">
-                    <input type="checkbox" id="healthAlerts" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="toggle-item">
-                <div class="toggle-info">
-                    <h3>Backup Reminders</h3>
-                    <p>Remind to backup data weekly</p>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="backupReminders" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Data Management -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-database"></i> Data Management</h2>
-            </div>
-            
-            <div class="data-actions">
-                <button class="data-btn primary" onclick="backupData()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Backup to Cloud</span>
-                    <small>Last: <span id="lastBackupTime">Never</span></small>
-                </button>
                 
-                <button class="data-btn secondary" onclick="restoreData()">
-                    <i class="fas fa-cloud-download-alt"></i>
-                    <span>Restore from Cloud</span>
-                    <small>Recover your data</small>
-                </button>
-                
-                <button class="data-btn warning" onclick="exportData()">
-                    <i class="fas fa-file-export"></i>
-                    <span>Export Data</span>
-                    <small>Download as JSON/CSV</small>
-                </button>
-                
-                <button class="data-btn danger" onclick="showResetConfirmation()">
-                    <i class="fas fa-trash-alt"></i>
-                    <span>Reset All Data</span>
-                    <small>Delete all farm data</small>
-                </button>
-            </div>
-        </div>
-
-        <!-- Account -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-user-shield"></i> Account</h2>
-            </div>
-            
-            <div class="account-info">
-                <div class="account-item">
-                    <i class="fas fa-user"></i>
-                    <div>
-                        <h3>Account Status</h3>
-                        <p id="accountStatus">Local account (offline)</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="managerName">Manager's Name</label>
+                        <input type="text" id="managerName" placeholder="Manager name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" placeholder="0712 345 678">
                     </div>
                 </div>
                 
-                <div class="account-actions">
-                    <button class="account-btn" id="loginBtn" onclick="showLogin()">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>Sign In</span>
+                <div class="form-group">
+                    <label for="location">Farm Location</label>
+                    <input type="text" id="location" placeholder="City, Country">
+                </div>
+                
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency">
+                        <option value="KES">Kenyan Shilling (KES)</option>
+                        <option value="USD">US Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">British Pound (GBP)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-database"></i> Data Management</h2>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Auto Backup</h3>
+                        <p>Automatically backup data daily</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="autoBackup">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="data-actions">
+                    <button class="btn-action" onclick="exportData()">
+                        <i class="fas fa-file-export"></i>
+                        <span>Export All Data</span>
                     </button>
-                    
-                    <button class="account-btn" onclick="showSyncStatus()">
-                        <i class="fas fa-sync-alt"></i>
-                        <span>Sync Now</span>
+                    <button class="btn-action" onclick="importData()">
+                        <i class="fas fa-file-import"></i>
+                        <span>Import Data</span>
+                    </button>
+                    <button class="btn-action danger" onclick="resetData()">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Reset All Data</span>
                     </button>
                 </div>
             </div>
-        </div>
 
-        <!-- About -->
-        <div class="section">
-            <div class="section-header">
-                <h2><i class="fas fa-info-circle"></i> About</h2>
-            </div>
-            
-            <div class="about-info">
-                <div class="about-item">
-                    <i class="fas fa-code"></i>
-                    <div>
-                        <h3>Version</h3>
-                        <p>2.1.0</p>
+            <!-- Notifications -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> Notifications</h2>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Daily Reminders</h3>
+                        <p>Remind to record production</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="dailyReminders" checked>
+                            <span class="slider"></span>
+                        </label>
                     </div>
                 </div>
                 
-                <div class="about-item">
-                    <i class="fas fa-calendar"></i>
-                    <div>
-                        <h3>Last Updated</h3>
-                        <p>December 2025</p>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Health Alerts</h3>
+                        <p>Alert for animal health issues</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="healthAlerts" checked>
+                            <span class="slider"></span>
+                        </label>
                     </div>
                 </div>
                 
-                <div class="about-item">
-                    <i class="fas fa-copyright"></i>
-                    <div>
-                        <h3>Copyright</h3>
-                        <p>© 2025 AgriFlow</p>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Low Stock Alerts</h3>
+                        <p>Alert when feed is low</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="stockAlerts" checked>
+                            <span class="slider"></span>
+                        </label>
                     </div>
                 </div>
             </div>
-            
-            <div class="footer-actions">
-                <button class="btn-save" onclick="saveSettings()">
+
+            <!-- About -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> About AgriFlow</h2>
+                </div>
+                
+                <div class="about-card">
+                    <div class="app-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <div class="app-info">
+                        <h3>AgriFlow</h3>
+                        <p>Smart Farm Management System</p>
+                        <p class="version">Version 2.1.0</p>
+                    </div>
+                </div>
+                
+                <div class="about-details">
+                    <div class="about-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Last Updated: December 2025</span>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-code"></i>
+                        <span>Developer: AgriFlow Team</span>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>support@agriflow.com</span>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+254 712 345 678</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="save-section">
+                <button class="btn-primary large" onclick="saveSettings()">
                     <i class="fas fa-save"></i> Save All Settings
+                </button>
+                <button class="btn-secondary" onclick="window.history.back()">
+                    Cancel
                 </button>
             </div>
         </div>
@@ -269,191 +239,172 @@
         </nav>
     </div>
 
-    <!-- Reset Confirmation Modal -->
-    <div class="modal" id="resetModal">
-        <div class="modal-content warning-modal">
-            <div class="modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3>Reset All Data?</h3>
-            <p>This action cannot be undone. All farm data, production records, and settings will be permanently deleted.</p>
-            
-            <div class="modal-input">
-                <label for="confirmReset">Type "DELETE" to confirm:</label>
-                <input type="text" id="confirmReset" placeholder="Type DELETE here">
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeModal('resetModal')">
-                    Cancel
-                </button>
-                <button class="btn-danger" onclick="confirmReset()" id="resetConfirmBtn" disabled>
-                    <i class="fas fa-trash-alt"></i> Reset All Data
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script src="js/app.js"></script>
-    <script src="js/firebase.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadSettings();
-            updateAccountStatus();
             updateNavActiveState();
             
-            // Setup confirmation input
-            const confirmInput = document.getElementById('confirmReset');
-            const resetBtn = document.getElementById('resetConfirmBtn');
-            
-            if (confirmInput && resetBtn) {
-                confirmInput.addEventListener('input', function() {
-                    resetBtn.disabled = this.value.toUpperCase() !== 'DELETE';
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('change', function() {
+                    toggleTheme(this.checked);
                 });
             }
         });
         
         function loadSettings() {
-            const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {
-                farmName: 'My Farm',
-                managerName: 'Farm Manager',
-                location: 'Nairobi, Kenya',
-                darkMode: false,
-                currency: 'KES'
-            };
+            const settings = JSON.parse(localStorage.getItem('agriflowSettings')) || {};
             
-            document.getElementById('farmName').value = settings.farmName;
-            document.getElementById('managerName').value = settings.managerName;
-            document.getElementById('location').value = settings.location;
-            document.getElementById('currency').value = settings.currency;
-            document.getElementById('darkModeToggle').checked = settings.darkMode;
-            
-            // Update theme options
-            updateThemeSelection(settings.darkMode ? 'dark' : 'light');
+            // Load values
+            document.getElementById('farmName').value = settings.farmName || 'My Farm';
+            document.getElementById('managerName').value = settings.managerName || 'Farm Manager';
+            document.getElementById('phoneNumber').value = settings.phoneNumber || '';
+            document.getElementById('location').value = settings.location || 'Nairobi, Kenya';
+            document.getElementById('currency').value = settings.currency || 'KES';
+            document.getElementById('themeToggle').checked = settings.darkMode || false;
+            document.getElementById('autoBackup').checked = settings.autoBackup || false;
+            document.getElementById('dailyReminders').checked = settings.dailyReminders !== false;
+            document.getElementById('healthAlerts').checked = settings.healthAlerts !== false;
+            document.getElementById('stockAlerts').checked = settings.stockAlerts !== false;
         }
         
         function saveSettings() {
             const settings = {
                 farmName: document.getElementById('farmName').value,
                 managerName: document.getElementById('managerName').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
                 location: document.getElementById('location').value,
-                darkMode: document.getElementById('darkModeToggle').checked,
-                currency: document.getElementById('currency').value
+                currency: document.getElementById('currency').value,
+                darkMode: document.getElementById('themeToggle').checked,
+                autoBackup: document.getElementById('autoBackup').checked,
+                dailyReminders: document.getElementById('dailyReminders').checked,
+                healthAlerts: document.getElementById('healthAlerts').checked,
+                stockAlerts: document.getElementById('stockAlerts').checked,
+                lastUpdated: new Date().toISOString()
             };
             
             localStorage.setItem('agriflowSettings', JSON.stringify(settings));
             
-            // Apply dark mode
-            if (settings.darkMode) {
+            // Apply theme immediately
+            toggleTheme(settings.darkMode);
+            
+            showNotification('Settings saved successfully!');
+        }
+        
+        function toggleTheme(isDark) {
+            if (isDark) {
                 document.body.classList.add('dark-mode');
             } else {
                 document.body.classList.remove('dark-mode');
             }
+        }
+        
+        function exportData() {
+            const data = {
+                farmData: JSON.parse(localStorage.getItem('agriflowData')) || {},
+                settings: JSON.parse(localStorage.getItem('agriflowSettings')) || {}
+            };
             
-            showNotification('Settings saved successfully');
-        }
-        
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('darkModeToggle').checked = true;
-            } else if (theme === 'light') {
-                document.body.classList.remove('dark-mode');
-                document.getElementById('darkModeToggle').checked = false;
-            } else {
-                // Auto mode - follow system preference
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.body.classList.add('dark-mode');
-                    document.getElementById('darkModeToggle').checked = true;
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    document.getElementById('darkModeToggle').checked = false;
-                }
-            }
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `agriflow-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
             
-            updateThemeSelection(theme);
+            showNotification('Data exported successfully!');
         }
         
-        function updateThemeSelection(theme) {
-            document.querySelectorAll('.theme-option').forEach(option => {
-                option.classList.remove('active');
-            });
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
             
-            const activeOption = document.querySelector(`.theme-option[onclick*="${theme}"]`);
-            if (activeOption) {
-                activeOption.classList.add('active');
-            }
-        }
-        
-        function showResetConfirmation() {
-            document.getElementById('resetModal').style.display = 'flex';
-        }
-        
-        function confirmReset() {
-            const confirmInput = document.getElementById('confirmReset');
-            if (confirmInput.value.toUpperCase() !== 'DELETE') {
-                alert('Please type DELETE to confirm');
-                return;
-            }
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (data.farmData) {
+                            localStorage.setItem('agriflowData', JSON.stringify(data.farmData));
+                        }
+                        
+                        if (data.settings) {
+                            localStorage.setItem('agriflowSettings', JSON.stringify(data.settings));
+                            loadSettings(); // Reload settings
+                        }
+                        
+                        showNotification('Data imported successfully!');
+                        
+                        // Refresh if on a data page
+                        if (!window.location.pathname.includes('settings.html')) {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        showNotification('Invalid backup file', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
             
-            if (confirm('Are you absolutely sure? This will delete ALL data including production records, animals, and settings.')) {
-                localStorage.clear();
-                showNotification('All data has been reset', 'success');
-                closeModal('resetModal');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            }
+            input.click();
         }
         
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            const confirmInput = document.getElementById('confirmReset');
-            if (confirmInput) confirmInput.value = '';
-            const resetBtn = document.getElementById('resetConfirmBtn');
-            if (resetBtn) resetBtn.disabled = true;
+        function resetData() {
+            if (confirm('Are you sure? This will delete ALL farm data and cannot be undone.')) {
+                localStorage.removeItem('agriflowData');
+                localStorage.removeItem('agriflowSettings');
+                
+                // Reset to defaults
+                const defaultSettings = {
+                    farmName: 'My Farm',
+                    managerName: 'Farm Manager',
+                    location: 'Nairobi, Kenya',
+                    darkMode: false,
+                    currency: 'KES',
+                    autoBackup: false,
+                    dailyReminders: true,
+                    healthAlerts: true,
+                    stockAlerts: true
+                };
+                
+                localStorage.setItem('agriflowSettings', JSON.stringify(defaultSettings));
+                localStorage.setItem('agriflowData', JSON.stringify({
+                    dairy: { milkProduction: [], animals: [], expenses: [] },
+                    poultry: { eggProduction: [], birds: [], expenses: [] }
+                }));
+                
+                loadSettings();
+                showNotification('All data has been reset to defaults');
+            }
         }
         
         function showNotification(message, type = 'success') {
-            // Use existing notification system
-            if (window.app && window.app.showNotification) {
-                window.app.showNotification(message, type);
-            } else {
-                alert(message);
+            // Create notification element
+            let notification = document.getElementById('settingsNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'settingsNotification';
+                notification.className = 'notification';
+                document.body.appendChild(notification);
             }
-        }
-        
-        function updateAccountStatus() {
-            const user = localStorage.getItem('agriflowUser');
-            const statusElement = document.getElementById('accountStatus');
             
-            if (user) {
-                const userData = JSON.parse(user);
-                statusElement.textContent = `Signed in as ${userData.email}`;
-                document.getElementById('loginBtn').innerHTML = `
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sign Out</span>
-                `;
-            } else {
-                statusElement.textContent = 'Local account (offline)';
-                document.getElementById('loginBtn').innerHTML = `
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Sign In</span>
-                `;
-            }
-        }
-        
-        function showLogin() {
-            const user = localStorage.getItem('agriflowUser');
-            if (user) {
-                if (confirm('Sign out from current account?')) {
-                    localStorage.removeItem('agriflowUser');
-                    updateAccountStatus();
-                    showNotification('Signed out successfully');
-                }
-            } else {
-                showNotification('Cloud sync requires Firebase setup', 'info');
-            }
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
         
         function updateNavActiveState() {
